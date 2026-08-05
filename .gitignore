@@ -1,0 +1,85 @@
+# --- Flutter / Dart ---
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# --- IDE ---
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# --- Cursor (keep rules/skills, ignore local state) ---
+.cursor/*
+!.cursor/rules/
+!.cursor/skills/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Environment & secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.jks
+**/google-services.json
+**/GoogleService-Info.plist
+supabase/.temp/
+
+# --- Supabase local ---
+supabase/.branches/
+supabase/.temp/
+
+# --- Test & coverage ---
+coverage/
+*.lcov
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Generated ---
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+*.config.dart
+
+# --- Android ---
+**/android/**/gradle-wrapper.jar
+**/android/.gradle/
+**/android/captures/
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+
+# --- iOS / macOS ---
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# --- Web ---
+**/web/.dart_tool/
+
+# --- Misc ---
+*.swp
+*.swo
+*~
+.fvm/
