@@ -1,0 +1,17 @@
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'User JWT containing tenant_id and roles/permissions claims.'
+    serviceJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Service JWT for connectors/workers with limited scopes.'
+    hmacWebhook:
+      type: apiKey
+      in: header
+      name: X-TaxOS-Signature
+      description: 'HMAC signature for webhook payloads.'
