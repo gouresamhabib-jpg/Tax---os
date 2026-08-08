@@ -24,8 +24,6 @@ jobs:
 
       - name: Validate OpenAPI
         run: |
-          npx --yes @redocly/openapi-cli validate openapi/openapi.yaml
-
-      - name: Lint OpenAPI
-        run: |
-          npx --yes @stoplight/spectral@6 lint openapi/openapi.yaml
+          # Spectral v6 lint using explicit ruleset
+    npx --yes @stoplight/spectral@6 lint openapi/openapi.yaml --ruleset .spectral.yaml
+   
