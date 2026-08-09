@@ -3,10 +3,10 @@ name: OpenAPI Validation
 on:
   push:
     paths:
-      - 'openapi/**'
+      - "openapi/**"
   pull_request:
     paths:
-      - 'openapi/**'
+      - "openapi/**"
 
 jobs:
   validate-openapi:
@@ -20,10 +20,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
-      - name: Validate OpenAPI
-        run: |
-          # Spectral v6 lint using explicit ruleset
-    npx --yes @stoplight/spectral@6 lint openapi/openapi.yaml --ruleset .spectral.yaml
-   
+      - name: Validate OpenAPI with Redocly
+        run: "npx --yes @redocly/openapi-cli validate openapi/openapi.yaml"
+
+      - name: Lint OpenAPI with Spectral
+        run: "npx --yes @stoplight/spectral@6 lint openapi/openapi.yaml --ruleset .spectral.yaml"
