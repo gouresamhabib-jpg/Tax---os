@@ -250,6 +250,84 @@ paths:
                 $ref: './components/schemas.yaml#/components/schemas/JobResponse'
 
 components:
-  $ref: './components/schemas.yaml'
+  schemas:
+    InviteRequest:
+      $ref: './components/schemas.yaml#/components/schemas/InviteRequest'
+    InviteResponse:
+      $ref: './components/schemas.yaml#/components/schemas/InviteResponse'
+    Tenant:
+      $ref: './components/schemas.yaml#/components/schemas/Tenant'
+    User:
+      $ref: './components/schemas.yaml#/components/schemas/User'
+    CompanyCreate:
+      $ref: './components/schemas.yaml#/components/schemas/CompanyCreate'
+    Company:
+      $ref: './components/schemas.yaml#/components/schemas/Company'
+    ObligationCreate:
+      $ref: './components/schemas.yaml#/components/schemas/ObligationCreate'
+    Obligation:
+      $ref: './components/schemas.yaml#/components/schemas/Obligation'
+    DocumentUploadRequest:
+      $ref: './components/schemas.yaml#/components/schemas/DocumentUploadRequest'
+    DocumentUploadResponse:
+      $ref: './components/schemas.yaml#/components/schemas/DocumentUploadResponse'
+    ConnectorConfigCreate:
+      $ref: './components/schemas.yaml#/components/schemas/ConnectorConfigCreate'
+    ConnectorConfig:
+      $ref: './components/schemas.yaml#/components/schemas/ConnectorConfig'
+    JobResponse:
+      $ref: './components/schemas.yaml#/components/schemas/JobResponse'
+    Pagination:
+      $ref: './components/schemas.yaml#/components/schemas/Pagination'
+    Error:
+      $ref: './components/schemas.yaml#/components/schemas/Error'
+
+  parameters:
+    RequestId:
+      $ref: './components/parameters.yaml#/components/parameters/RequestId'
+    CorrelationId:
+      $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+    IdempotencyKey:
+      $ref: './components/parameters.yaml#/components/parameters/IdempotencyKey'
+    Limit:
+      $ref: './components/parameters.yaml#/components/parameters/Limit'
+    Cursor:
+      $ref: './components/parameters.yaml#/components/parameters/Cursor'
+    Q:
+      $ref: './components/parameters.yaml#/components/parameters/Q'
+    Sort:
+      $ref: './components/parameters.yaml#/components/parameters/Sort'
+
+  responses:
+    BadRequest:
+      $ref: './components/responses.yaml#/components/responses/BadRequest'
+    Unauthorized:
+      $ref: './components/responses.yaml#/components/responses/Unauthorized'
+    Forbidden:
+      $ref: './components/responses.yaml#/components/responses/Forbidden'
+    NotFound:
+      $ref: './components/responses.yaml#/components/responses/NotFound'
+    Conflict:
+      $ref: './components/responses.yaml#/components/responses/Conflict'
+    TooManyRequests:
+      $ref: './components/responses.yaml#/components/responses/TooManyRequests'
+
+  examples:
+    InviteExample:
+      $ref: './components/examples.yaml#/components/examples/InviteExample'
+    CompanyExample:
+      $ref: './components/examples.yaml#/components/examples/CompanyExample'
+    ObligationExample:
+      $ref: './components/examples.yaml#/components/examples/ObligationExample'
+    DocumentUploadExample:
+      $ref: './components/examples.yaml#/components/examples/DocumentUploadExample'
+
+  securitySchemes:
+    bearerAuth:
+      $ref: './components/security.yaml#/components/securitySchemes/bearerAuth'
+    serviceJwt:
+      $ref: './components/security.yaml#/components/securitySchemes/serviceJwt'
+    hmacWebhook:
+      $ref: './components/security.yaml#/components/securitySchemes/hmacWebhook'
 
 # NOTE: full OpenAPI components are split into files under /openapi/components/
