@@ -1,0 +1,29 @@
+name: OpenAPI Validation
+
+on:
+  push:
+    paths:
+      - "openapi/**"
+  pull_request:
+    paths:
+      - "openapi/**"
+
+jobs:
+  validate-openapi:
+    name: Validate OpenAPI 3.1
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Validate OpenAPI with Redocly
+        run: "npx --yes @redocly/openapi-cli validate openapi/openapi.yaml"
+
+      - name: Lint OpenAPI with Spectral
+        run: "npx --yes @stoplight/spectral@6 lint openapi/openapi.yaml --ruleset .spectral.yaml"

@@ -1,0 +1,333 @@
+openapi: 3.1.0
+info:
+  title: TaxOS Public API
+  version: "1.0.0"
+  description: |
+    TaxOS REST API v1 — Multi-tenant, JWT-authenticated API. This OpenAPI specification is the authoritative API contract for TaxOS.
+    All tenant-scoped requests must include a JWT with the tenant_id claim. Service-to-service calls (connectors, workers) should use a service JWT.
+servers:
+  - url: https://api.taxos.example.com/api/v1
+    description: Production
+  - url: https://staging-api.taxos.example.com/api/v1
+    description: Staging
+
+security:
+  - bearerAuth: []
+
+externalDocs:
+  description: TaxOS API & Integration Guide
+  url: https://docs.taxos.example.com/api
+
+paths:
+  /auth/invite:
+    post:
+      tags: [auth]
+      summary: Invite a user to a tenant
+      description: Invite a user (sends email + creates pending user). Requires tenant.admin permission.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: './components/parameters.yaml#/components/parameters/RequestId'
+        - $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas.yaml#/components/schemas/InviteRequest'
+            examples:
+              invite:
+                $ref: './components/examples.yaml#/components/examples/InviteExample'
+      responses:
+        '201':
+          description: Invite created
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/InviteResponse'
+        '400':
+          $ref: './components/responses.yaml#/components/responses/BadRequest'
+        '403':
+          $ref: './components/responses.yaml#/components/responses/Forbidden'
+
+  /auth/token:
+    post:
+      tags: [auth]
+      summary: Exchange grant for JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum: [authorization_code, refresh_token, password]
+                code:
+                  type: string
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: Token response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+                  refresh_token:
+                    type: string
+        '400':
+          $ref: './components/responses.yaml#/components/responses/BadRequest'
+
+  /companies:
+    post:
+      tags: [companies]
+      summary: Create company
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: './components/parameters.yaml#/components/parameters/RequestId'
+        - $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas.yaml#/components/schemas/CompanyCreate'
+      responses:
+        '201':
+          description: Company created
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/Company'
+        '400':
+          $ref: './components/responses.yaml#/components/responses/BadRequest'
+
+  /companies/{company_id}:
+    get:
+      tags: [companies]
+      summary: Get company by ID
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: './components/parameters.yaml#/components/parameters/RequestId'
+        - $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Company
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/Company'
+        '404':
+          $ref: './components/responses.yaml#/components/responses/NotFound'
+
+  /companies/{company_id}/obligations:
+    post:
+      tags: [obligations]
+      summary: Create an obligation for a company
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: './components/parameters.yaml#/components/parameters/RequestId'
+        - $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+        - $ref: './components/parameters.yaml#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas.yaml#/components/schemas/ObligationCreate'
+      responses:
+        '201':
+          description: Obligation created
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/Obligation'
+        '202':
+          description: Created async job (for heavy operations)
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/JobResponse'
+
+  /obligations/{obligation_id}/file:
+    post:
+      tags: [obligations]
+      summary: Trigger filing (creates connector job)
+      parameters:
+        - name: obligation_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: './components/parameters.yaml#/components/parameters/RequestId'
+        - $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+        - $ref: './components/parameters.yaml#/components/parameters/IdempotencyKey'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                connector_id:
+                  type: string
+                payload:
+                  type: object
+      responses:
+        '202':
+          description: Filing job queued
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/JobResponse'
+
+  /connectors:
+    post:
+      tags: [connectors]
+      summary: Register connector config
+      parameters:
+        - $ref: './components/parameters.yaml#/components/parameters/RequestId'
+        - $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas.yaml#/components/schemas/ConnectorConfigCreate'
+      responses:
+        '201':
+          description: Connector registered
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/ConnectorConfig'
+
+  /connectors/{connector_id}/sync:
+    post:
+      tags: [connectors]
+      summary: Trigger sync for connector
+      parameters:
+        - name: connector_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: './components/parameters.yaml#/components/parameters/RequestId'
+        - $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_id:
+                  type: string
+                action:
+                  type: string
+      responses:
+        '202':
+          description: Sync job queued
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas.yaml#/components/schemas/JobResponse'
+
+components:
+  schemas:
+    InviteRequest:
+      $ref: './components/schemas.yaml#/components/schemas/InviteRequest'
+    InviteResponse:
+      $ref: './components/schemas.yaml#/components/schemas/InviteResponse'
+    Tenant:
+      $ref: './components/schemas.yaml#/components/schemas/Tenant'
+    User:
+      $ref: './components/schemas.yaml#/components/schemas/User'
+    CompanyCreate:
+      $ref: './components/schemas.yaml#/components/schemas/CompanyCreate'
+    Company:
+      $ref: './components/schemas.yaml#/components/schemas/Company'
+    ObligationCreate:
+      $ref: './components/schemas.yaml#/components/schemas/ObligationCreate'
+    Obligation:
+      $ref: './components/schemas.yaml#/components/schemas/Obligation'
+    DocumentUploadRequest:
+      $ref: './components/schemas.yaml#/components/schemas/DocumentUploadRequest'
+    DocumentUploadResponse:
+      $ref: './components/schemas.yaml#/components/schemas/DocumentUploadResponse'
+    ConnectorConfigCreate:
+      $ref: './components/schemas.yaml#/components/schemas/ConnectorConfigCreate'
+    ConnectorConfig:
+      $ref: './components/schemas.yaml#/components/schemas/ConnectorConfig'
+    JobResponse:
+      $ref: './components/schemas.yaml#/components/schemas/JobResponse'
+    Pagination:
+      $ref: './components/schemas.yaml#/components/schemas/Pagination'
+    Error:
+      $ref: './components/schemas.yaml#/components/schemas/Error'
+
+  parameters:
+    RequestId:
+      $ref: './components/parameters.yaml#/components/parameters/RequestId'
+    CorrelationId:
+      $ref: './components/parameters.yaml#/components/parameters/CorrelationId'
+    IdempotencyKey:
+      $ref: './components/parameters.yaml#/components/parameters/IdempotencyKey'
+    Limit:
+      $ref: './components/parameters.yaml#/components/parameters/Limit'
+    Cursor:
+      $ref: './components/parameters.yaml#/components/parameters/Cursor'
+    Q:
+      $ref: './components/parameters.yaml#/components/parameters/Q'
+    Sort:
+      $ref: './components/parameters.yaml#/components/parameters/Sort'
+
+  responses:
+    BadRequest:
+      $ref: './components/responses.yaml#/components/responses/BadRequest'
+    Unauthorized:
+      $ref: './components/responses.yaml#/components/responses/Unauthorized'
+    Forbidden:
+      $ref: './components/responses.yaml#/components/responses/Forbidden'
+    NotFound:
+      $ref: './components/responses.yaml#/components/responses/NotFound'
+    Conflict:
+      $ref: './components/responses.yaml#/components/responses/Conflict'
+    TooManyRequests:
+      $ref: './components/responses.yaml#/components/responses/TooManyRequests'
+
+  examples:
+    InviteExample:
+      $ref: './components/examples.yaml#/components/examples/InviteExample'
+    CompanyExample:
+      $ref: './components/examples.yaml#/components/examples/CompanyExample'
+    ObligationExample:
+      $ref: './components/examples.yaml#/components/examples/ObligationExample'
+    DocumentUploadExample:
+      $ref: './components/examples.yaml#/components/examples/DocumentUploadExample'
+
+  securitySchemes:
+    bearerAuth:
+      $ref: './components/security.yaml#/components/securitySchemes/bearerAuth'
+    serviceJwt:
+      $ref: './components/security.yaml#/components/securitySchemes/serviceJwt'
+    hmacWebhook:
+      $ref: './components/security.yaml#/components/securitySchemes/hmacWebhook'
+
+# NOTE: full OpenAPI components are split into files under /openapi/components/

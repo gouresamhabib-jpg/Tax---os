@@ -1,0 +1,219 @@
+components:
+  schemas:
+    InviteRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        roles:
+          type: array
+          items:
+            type: string
+      required: [email]
+
+    InviteResponse:
+      type: object
+      properties:
+        invite_id:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        invited_by:
+          type: string
+        invited_at:
+          type: string
+          format: date-time
+
+    Tenant:
+      type: object
+      properties:
+        tenant_id:
+          type: string
+        name:
+          type: string
+        plan:
+          type: string
+          enum: [free, pro, enterprise]
+        settings:
+          type: object
+
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        tenant_id:
+          type: string
+        email:
+          type: string
+          format: email
+        display_name:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+
+    CompanyCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        legal_name:
+          type: string
+        tax_identifier:
+          type: string
+        jurisdiction:
+          type: string
+        registration_numbers:
+          type: object
+      required: [name, jurisdiction]
+
+    Company:
+      allOf:
+        - $ref: '#/components/schemas/CompanyCreate'
+        - type: object
+          properties:
+            company_id:
+              type: string
+            tenant_id:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    ObligationCreate:
+      type: object
+      properties:
+        type:
+          type: string
+        subtype:
+          type: string
+        due_date:
+          type: string
+          format: date-time
+        due_date_rule:
+          type: object
+        recurrence:
+          type: object
+        required_evidence:
+          type: array
+          items:
+            type: string
+        assigned_to:
+          type: string
+
+    Obligation:
+      allOf:
+        - $ref: '#/components/schemas/ObligationCreate'
+        - type: object
+          properties:
+            obligation_id:
+              type: string
+            tenant_id:
+              type: string
+            company_id:
+              type: string
+            status:
+              type: string
+              enum: [draft, scheduled, in_progress, ready, filed, paid, closed, overdue, cancelled]
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    DocumentUploadRequest:
+      type: object
+      properties:
+        company_id:
+          type: string
+        filename:
+          type: string
+        mime_type:
+          type: string
+        size:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+      required: [company_id, filename]
+
+    DocumentUploadResponse:
+      type: object
+      properties:
+        document_id:
+          type: string
+        upload_url:
+          type: string
+        storage_path:
+          type: string
+        expires_in:
+          type: integer
+
+    ConnectorConfigCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        connector_type:
+          type: string
+        capabilities:
+          type: object
+        config:
+          type: object
+
+    ConnectorConfig:
+      allOf:
+        - $ref: '#/components/schemas/ConnectorConfigCreate'
+        - type: object
+          properties:
+            connector_id:
+              type: string
+            tenant_id:
+              type: string
+            enabled:
+              type: boolean
+
+    JobResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, running, success, failed]
+        submitted_at:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          nullable: true
+        limit:
+          type: integer
+        total:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
