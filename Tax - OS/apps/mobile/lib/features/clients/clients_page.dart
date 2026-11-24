@@ -196,6 +196,7 @@ class _ClientsPageState extends State<ClientsPage> {
                                         '${tr('taxId')}: ${filtered[index].taxId}',
                                       if (filtered[index].phone.isNotEmpty)
                                         filtered[index].phone,
+                                      '\${tr('responsibleEmployee')}: \${filtered[index].responsibleEmployeeId.isEmpty ? tr('unassigned') : demoOfficeMemberName(filtered[index].responsibleEmployeeId, widget.locale)}',
                                     ].join(' • '),
                                   ),
                                   trailing: PopupMenuButton<String>(
