@@ -1,0 +1,74 @@
+name: Database prototype checks
+
+on:
+  pull_request:
+    paths:
+      - "Tax - OS/database/prototypes/**"
+      - ".github/workflows/database-prototype.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Tax - OS/database/prototypes/**"
+      - ".github/workflows/database-prototype.yml"
+
+jobs:
+  postgres-prototype-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: taxos_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d taxos_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: postgres
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGDATABASE: taxos_test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+
+      - name: Create isolated Auth compatibility shim
+        run: |
+          psql --set ON_ERROR_STOP=1 \
+            --file "Tax - OS/database/prototypes/test_support/postgres_auth_stub.sql"
+
+      - name: Apply firm and client prototype
+        run: |
+          psql --set ON_ERROR_STOP=1 \
+            --file "Tax - OS/database/prototypes/20261124_firm_client_registry.sql"
+
+      - name: Apply client assignment and work-item prototype
+        run: |
+          psql --set ON_ERROR_STOP=1 \
+            --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items.sql"
+
+      - name: Test firm tenancy and client RLS
+        run: |
+          psql --set ON_ERROR_STOP=1 \
+            --set user_a=11111111-1111-4111-8111-111111111111 \
+            --set user_b=22222222-2222-4222-8222-222222222222 \
+            --file "Tax - OS/database/prototypes/20261124_firm_client_registry_rls_tests.sql"
+
+      - name: Test client assignments and work-item permissions
+        run: |
+          psql --set ON_ERROR_STOP=1 \
+            --set user_a=11111111-1111-4111-8111-111111111111 \
+            --set user_b=22222222-2222-4222-8222-222222222222 \
+            --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items_rls_tests.sql"
