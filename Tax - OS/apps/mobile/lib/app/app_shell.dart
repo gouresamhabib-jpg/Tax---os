@@ -393,7 +393,7 @@ class _ObligationTable extends StatelessWidget {
                             Expanded(flex: 2, child: Text(AppCopy.t(locale, row.$2))),
                             Expanded(flex: 2, child: Text(AppCopy.t(locale, row.$3))),
                             Expanded(flex: 2, child: Text(row.$4)),
-                            _StatusPill(label: AppCopy.t('ar', row.$5)),
+                            _StatusPill(label: AppCopy.t(locale, row.$5)),
                           ],
                         );
                 },
