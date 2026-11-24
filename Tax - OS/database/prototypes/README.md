@@ -13,7 +13,7 @@ Files in this directory are isolated design and test artifacts.
   2. `20261124_client_assignments_and_work_items_rls_tests.sql`
 - Each test script requires two existing local Supabase Auth users and rolls back its fixture transaction.
 - The assignment extension adds client responsibility, operational work items, and trigger-written assignment history. It is not a tax-obligation or formal approval workflow.
-- A GitHub Actions PostgreSQL 16 compatibility job runs both SQL prototypes and RLS scripts using the isolated `test_support/postgres_auth_stub.sql`; this shim emulates only the minimum `auth.users`, `auth.uid()`, and Supabase role surface needed by the tests. It is not a substitute for final validation against a disposable local Supabase instance.
-- These files have not been applied to a hosted Supabase project. The PostgreSQL compatibility job validates SQL behavior against PostgreSQL 16, while Supabase-specific behavior still requires local Supabase verification.
+- GitHub Actions runs the SQL prototypes and RLS scripts twice: first on PostgreSQL 16 with the isolated `test_support/postgres_auth_stub.sql`, then on a disposable local Supabase stack using two real Auth users created through the local Auth API. The shim is a fast compatibility layer; the local Supabase job validates the actual Auth schema, roles, and `auth.uid()` behavior.
+- These files have not been applied to a hosted Supabase project. Passing local Supabase CI does not approve production migrations, legacy backfill, or application cutover.
 
 A production migration must be additive, reconcile legacy `accountants` records, include a backfill/rollback plan, and pass integration tests under actual Supabase roles before application cutover.
