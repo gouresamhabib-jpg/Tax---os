@@ -190,7 +190,7 @@ $$;
 UPDATE taxos_prototype.work_items
 SET status = 'in_progress',
     updated_by_membership_id = :'member_b_id'::uuid
-WHERE id = :'work_item_id'::uuid;
+WHERE id = current_setting('taxos_test.work_item_id')::uuid;
 
 -- Assigned employee cannot reassign the task.
 DO $$
