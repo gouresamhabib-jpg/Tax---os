@@ -1,0 +1,65 @@
+name: Flutter quality checks
+
+on:
+  pull_request:
+    paths:
+      - "Tax - OS/apps/mobile/**"
+      - ".github/workflows/flutter.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Tax - OS/apps/mobile/**"
+      - ".github/workflows/flutter.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Tax - OS/apps/mobile"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Format Dart sources
+        run: dart format lib test
+
+      - name: Inspect formatter changes
+        run: |
+          git status --short
+          git diff --stat
+
+      - name: Commit formatting changes to this repository's PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: ${{ github.head_ref }}
+          skip_checkout: true
+          skip_fetch: true
+          commit_message: "style(flutter): apply dart formatter"
+          file_pattern: "."
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test

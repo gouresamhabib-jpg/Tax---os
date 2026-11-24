@@ -78,7 +78,7 @@ flowchart TB
 
 ### 4.1 Presentation layer
 
-**Location:** `lib/features/<feature>/presentation/`
+**Location:** `apps/mobile/lib/features/<feature>/presentation/`
 
 | Component | Responsibility |
 |-----------|----------------|
@@ -96,7 +96,7 @@ flowchart TB
 
 ### 4.2 Domain layer
 
-**Location:** `lib/features/<feature>/domain/`
+**Location:** `apps/mobile/lib/features/<feature>/domain/`
 
 | Component | Responsibility |
 |-----------|----------------|
@@ -112,7 +112,7 @@ flowchart TB
 
 ### 4.3 Data layer
 
-**Location:** `lib/features/<feature>/data/`
+**Location:** `apps/mobile/lib/features/<feature>/data/`
 
 | Component | Responsibility |
 |-----------|----------------|
@@ -123,7 +123,7 @@ flowchart TB
 **Rules:**
 - Models handle serialization/deserialization
 - Datasources throw exceptions; repositories catch and return Failures
-- Remote datasource uses Supabase client from `lib/core/network/`
+- Remote datasource uses Supabase client from `apps/mobile/lib/core/network/`
 - Local datasource uses Hive or SharedPreferences for caching
 
 ---
@@ -159,16 +159,16 @@ flowchart LR
     Model --> Entity
 ```
 
-**Dependency injection:** `get_it` service locator with `injectable` code generation. Registration in `lib/app/di/`.
+**Dependency injection:** `get_it` service locator with `injectable` code generation. Registration in `apps/mobile/lib/app/di/`.
 
 ---
 
 ## 6. Feature module structure
 
-Every feature under `lib/features/` follows this layout:
+Every feature under `apps/mobile/lib/features/` follows this layout:
 
 ```
-lib/features/<feature_name>/
+apps/mobile/lib/features/<feature_name>/
 ├── data/
 │   ├── datasources/
 │   │   ├── <feature>_remote_datasource.dart
@@ -202,23 +202,23 @@ lib/features/<feature_name>/
 | `auth` | Authentication and session | User, Session |
 | `onboarding` | First-run setup | TaxProfile, OnboardingStep |
 | `dashboard` | Home overview | DashboardSummary, Deadline |
-| `tax_filing` | Return preparation | TaxReturn, IncomeEntry, Deduction |
-| `tax_calculator` | Tax estimation | TaxEstimate, TaxBracket |
+| `clients` | Egyptian client registry | Client, Contact, TaxRegistration |\n| `obligations` | Tax obligation workflow | TaxObligation, FilingEvent, PaymentEvent |\n| `work_management` | Tasks and review | WorkItem, ReviewDecision, Checklist |
+| `calendar` | Office deadlines and reminders | CalendarEntry, Notification |
 | `documents` | Document management | Document, DocumentCategory |
-| `clients` | Client CRM (future) | Client, ClientContact |
-| `invoicing` | Invoice management | Invoice, LineItem |
-| `expenses` | Expense tracking | Expense, ExpenseCategory |
+
+
+
 | `reports` | Report generation | Report, ReportConfig |
 | `subscriptions` | Billing and plans | Subscription, Plan |
 | `notifications` | Alerts and messages | Notification, NotificationPreference |
 | `settings` | App configuration | AppSettings |
-| `profile` | User profile | UserProfile, Dependent |
+| `office` | Firm workspace and membership | Firm, Membership, Role |
 
 ---
 
 ## 7. Shared modules
 
-### 7.1 `lib/app/` — Application shell
+### 7.1 `apps/mobile/lib/app/` — Application shell
 
 | Module | Purpose |
 |--------|---------|
@@ -227,7 +227,7 @@ lib/features/<feature_name>/
 | `router/` | GoRouter route definitions, guards, deep links |
 | `theme/` | Material 3 theme, typography, color tokens |
 
-### 7.2 `lib/core/` — Cross-cutting infrastructure
+### 7.2 `apps/mobile/lib/core/` — Cross-cutting infrastructure
 
 | Module | Purpose |
 |--------|---------|
@@ -239,7 +239,7 @@ lib/features/<feature_name>/
 | `utils/` | Formatters (currency, date), parsers |
 | `validators/` | Input validation (email, tax ID, SSN format) |
 
-### 7.3 `lib/shared/` — Cross-feature shared code
+### 7.3 `apps/mobile/lib/shared/` — Cross-feature shared code
 
 | Module | Purpose |
 |--------|---------|

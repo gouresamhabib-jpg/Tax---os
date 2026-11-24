@@ -12,8 +12,8 @@ TaxOS is a commercial SaaS platform for tax management, filing, and compliance. 
 
 | Path | Purpose |
 |------|---------|
-| `apps/mobile/` | Flutter project (platform targets, pubspec, entry point) |
-| `lib/` | Application source — features, core, app config |
+| `apps/mobile/` | Flutter package, platform targets, and application source |
+| `apps/mobile/lib/` | Flutter application source — features, core, app config |
 | `assets/` | Shared static assets (fonts, icons, images) |
 | `database/` | Supabase migrations, RLS policies, seeds, edge functions |
 | `docs/` | Architecture, API, deployment, and onboarding documentation |
