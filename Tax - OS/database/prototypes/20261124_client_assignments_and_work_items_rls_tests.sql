@@ -73,6 +73,7 @@ VALUES (
   :'firm_a_id'::uuid, :'client_a_id'::uuid, :'member_b_id'::uuid, 'primary', :'member_a_id'::uuid
 )
 RETURNING id AS client_assignment_id \gset
+SELECT set_config('taxos_test.client_assignment_id', :'client_assignment_id', true);
 
 -- Duplicate active primary responsibility is rejected.
 DO $$
@@ -123,6 +124,7 @@ VALUES (
   :'member_b_id'::uuid, :'member_a_id'::uuid, :'member_a_id'::uuid, :'member_a_id'::uuid
 )
 RETURNING id AS work_item_id \gset
+SELECT set_config('taxos_test.work_item_id', :'work_item_id', true);
 
 -- A task cannot be assigned to the same person who reviews it.
 DO $$
