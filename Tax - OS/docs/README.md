@@ -17,7 +17,8 @@
 | [16_EGYPTIAN_TAX_DOMAIN_AND_OBLIGATION_MODEL.md](16_EGYPTIAN_TAX_DOMAIN_AND_OBLIGATION_MODEL.md) | Proposed Egyptian client, tax registration, obligation, workflow, filing, payment, evidence, and audit domain model |
 | [17_LOGICAL_ERD_AND_LEGACY_TABLE_DISPOSITION.md](17_LOGICAL_ERD_AND_LEGACY_TABLE_DISPOSITION.md) | Logical entities, relationships, tenant integrity rules, conceptual ERD, and legacy table keep/replace/defer decisions |
 | [18_REPOSITORY_AND_IMPLEMENTATION_READINESS.md](18_REPOSITORY_AND_IMPLEMENTATION_READINESS.md) | Actual Git-tree implementation audit and safe Flutter-first delivery sequence |
-| [19_DATABASE_FOUNDATION_AND_RLS_DESIGN.md](19_DATABASE_FOUNDATION_AND_RLS_DESIGN.md) | First proposed firm/client schema slice, membership authorization, composite tenant integrity, and local RLS test plan |
+| [19_DATABASE_FOUNDATION_AND_RLS_DESIGN.md](19_DATABASE_FOUNDATION_AND_RLS_DESIGN.md) | First proposed firm/client schema slice, office-wide visibility decision, membership authorization, and local RLS test plan |
+| [20_CLIENT_RESPONSIBILITY_AND_WORK_ASSIGNMENT_MODEL.md](20_CLIENT_RESPONSIBILITY_AND_WORK_ASSIGNMENT_MODEL.md) | Client primary/supporting responsibility, independent task assignees/reviewers, assignment history, and RLS prototype design |
 | [00_PROJECT_RULES.md](00_PROJECT_RULES.md) | Project rules and contributor requirements |
 | [01_PRODUCT_VISION.md](01_PRODUCT_VISION.md) | Legacy product vision; pending reconciliation with DOC-13 |
 | [02_PRD.md](02_PRD.md) | Legacy US-oriented PRD; pending replacement with Egyptian firm requirements |
