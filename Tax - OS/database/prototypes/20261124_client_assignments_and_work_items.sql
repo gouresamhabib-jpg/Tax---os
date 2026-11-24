@@ -180,13 +180,13 @@ BEGIN
     END IF;
   END IF;
 
-  IF EXISTS (
+  IF TG_OP = 'INSERT' AND EXISTS (
     SELECT 1 FROM taxos_prototype.clients AS client
     WHERE client.firm_id = NEW.firm_id
       AND client.id = NEW.client_id
       AND client.archived_at IS NOT NULL
   ) THEN
-    RAISE EXCEPTION 'Archived clients cannot be assigned'
+    RAISE EXCEPTION 'Archived clients cannot receive new assignments'
       USING ERRCODE = '23514';
   END IF;
 
@@ -406,7 +406,7 @@ BEGIN
       USING ERRCODE = '23514';
   END IF;
 
-  IF EXISTS (
+  IF TG_OP = 'INSERT' AND EXISTS (
     SELECT 1 FROM taxos_prototype.clients AS client
     WHERE client.firm_id = NEW.firm_id
       AND client.id = NEW.client_id
