@@ -12,7 +12,7 @@
 
 | Document | Description |
 |----------|-------------|
-| [14_OFFICE_TENANCY_AND_MEMBERSHIP_MODEL.md](14_OFFICE_TENANCY_AND_MEMBERSHIP_MODEL.md) | Proposed multi-office tenant, employee membership, role, RLS, relational integrity, and migration model |
+| [14_OFFICE_TENANCY_AND_MEMBERSHIP_MODEL.md](14_OFFICE_TENANCY_AND_MEMBERSHIP_MODEL.md) | Proposed multi-office tenant, employee membership, role, RLS, relational integrity, and migration model |\n| [15_EXISTING_SCHEMA_AUDIT_AND_MIGRATION_READINESS.md](15_EXISTING_SCHEMA_AUDIT_AND_MIGRATION_READINESS.md) | Audit of the current US-oriented schema, tenancy/security gaps, and safe migration gates |
 | [00_PROJECT_RULES.md](00_PROJECT_RULES.md) | Project rules and contributor requirements |
 | [01_PRODUCT_VISION.md](01_PRODUCT_VISION.md) | Legacy product vision; pending reconciliation with DOC-13 |
 | [02_PRD.md](02_PRD.md) | Legacy US-oriented PRD; pending replacement with Egyptian firm requirements |
@@ -28,4 +28,4 @@
 
 ## Implementation rule
 
-Do not implement features from legacy US-oriented requirements. Reconcile the numbered product, architecture, database, security, and roadmap documents with DOC-13 and DOC-14 before treating them as implementation-ready. DOC-14 is a proposed target design, not an approved or executable migration. No hosted database migration or production deployment is authorized by these documents.
+Do not implement features from legacy US-oriented requirements. DOC-15 confirms that the existing SQL migrations are a solo-accountant / US tax-return foundation and must not be mechanically converted into the Egyptian firm product. Reconcile the numbered product, architecture, database, security, and roadmap documents with DOC-13 and DOC-14 before treating them as implementation-ready. DOC-14 is a proposed target design, not an approved or executable migration. No hosted database migration or production deployment is authorized by these documents.
