@@ -80,4 +80,35 @@ void main() {
     expect(find.textContaining('أحمد حسن'), findsWidgets);
     expect(find.textContaining('المراجع: مريم علي'), findsOneWidget);
   });
+
+  testWidgets('new clients are available when assigning office tasks', (tester) async {
+    await tester.pumpWidget(const TaxOSApp());
+
+    await tester.tap(find.byKey(const ValueKey('nav_clients')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('add_client')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).first, 'شركة جديدة للاختبار');
+    await tester.tap(find.byKey(const ValueKey('save_client')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('nav_tasksPageTitle')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('add_work_item')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('task_client')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('شركة جديدة للاختبار'), findsOneWidget);
+    await tester.tap(find.text('شركة جديدة للاختبار').last);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const ValueKey('task_title')), 'مهمة للعميل الجديد');
+    await tester.tap(find.byKey(const ValueKey('save_work_item')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('مهمة للعميل الجديد'), findsOneWidget);
+    expect(find.text('شركة جديدة للاختبار'), findsOneWidget);
+  });
+
 }
