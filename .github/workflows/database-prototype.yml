@@ -72,3 +72,61 @@ jobs:
             --set user_a=11111111-1111-4111-8111-111111111111 \
             --set user_b=22222222-2222-4222-8222-222222222222 \
             --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items_rls_tests.sql"
+
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Initialize and start disposable local Supabase
+        run: |
+          mkdir -p "$RUNNER_TEMP/taxos-supabase"
+          cd "$RUNNER_TEMP/taxos-supabase"
+          supabase init --force
+          supabase start
+          supabase status -o env >> "$GITHUB_ENV"
+
+      - name: Create disposable Supabase Auth users
+        run: |
+          USER_A=$(curl --fail-with-body --silent --show-error \
+            --request POST "$API_URL/auth/v1/signup" \
+            --header "apikey: $ANON_KEY" \
+            --header "Content-Type: application/json" \
+            --data '{"email":"taxos-user-a@example.test","password":"TaxOS-Test-Password-A-2026!"}' \
+            | jq -r '.id')
+          USER_B=$(curl --fail-with-body --silent --show-error \
+            --request POST "$API_URL/auth/v1/signup" \
+            --header "apikey: $ANON_KEY" \
+            --header "Content-Type: application/json" \
+            --data '{"email":"taxos-user-b@example.test","password":"TaxOS-Test-Password-B-2026!"}' \
+            | jq -r '.id')
+          test -n "$USER_A" && test "$USER_A" != "null"
+          test -n "$USER_B" && test "$USER_B" != "null"
+          echo "TAXOS_TEST_USER_A=$USER_A" >> "$GITHUB_ENV"
+          echo "TAXOS_TEST_USER_B=$USER_B" >> "$GITHUB_ENV"
+
+      - name: Apply prototypes to actual local Supabase
+        run: |
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+            --file "Tax - OS/database/prototypes/20261124_firm_client_registry.sql"
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+            --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items.sql"
+
+      - name: Run RLS tests against actual local Supabase Auth
+        run: |
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+            --set user_a="$TAXOS_TEST_USER_A" \
+            --set user_b="$TAXOS_TEST_USER_B" \
+            --file "Tax - OS/database/prototypes/20261124_firm_client_registry_rls_tests.sql"
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+            --set user_a="$TAXOS_TEST_USER_A" \
+            --set user_b="$TAXOS_TEST_USER_B" \
+            --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items_rls_tests.sql"
+
+      - name: Stop disposable local Supabase
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/taxos-supabase/supabase/config.toml" ]; then
+            cd "$RUNNER_TEMP/taxos-supabase"
+            supabase stop --no-backup
+          fi
