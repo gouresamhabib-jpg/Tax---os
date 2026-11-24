@@ -111,4 +111,37 @@ void main() {
     expect(find.text('شركة جديدة للاختبار'), findsOneWidget);
   });
 
+
+  testWidgets('archiving a client preserves its task history and allows restore', (tester) async {
+    await tester.pumpWidget(const TaxOSApp());
+
+    await tester.tap(find.byKey(const ValueKey('nav_clients')));
+    await tester.pumpAndSettle();
+
+    final clientTile = find.byKey(const ValueKey('client_demo-1'));
+    expect(clientTile, findsOneWidget);
+    await tester.tap(
+      find.descendant(
+        of: clientTile,
+        matching: find.byType(PopupMenuButton<String>),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('أرشفة العميل').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('أرشفة العميل').last);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('client_demo-1')), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('client_filter_archived')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('client_demo-1')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('nav_tasksPageTitle')));
+    await tester.pumpAndSettle();
+    expect(find.text('مراجعة إقرار القيمة المضافة'), findsOneWidget);
+    expect(find.text('شركة النور للتجارة'), findsOneWidget);
+  });
+
 }
