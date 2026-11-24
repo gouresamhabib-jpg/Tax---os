@@ -220,7 +220,7 @@ BEGIN
     UPDATE taxos_prototype.work_items
     SET assignee_membership_id = current_setting('taxos_test.member_a_id')::uuid,
         updated_by_membership_id = current_setting('taxos_test.member_b_id')::uuid
-    WHERE id = :'work_item_id'::uuid;
+    WHERE id = current_setting('taxos_test.work_item_id')::uuid;
     RAISE EXCEPTION 'An ordinary assignee was allowed to reassign a task';
   EXCEPTION WHEN insufficient_privilege THEN NULL;
   END;
