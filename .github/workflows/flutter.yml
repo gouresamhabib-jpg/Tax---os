@@ -12,6 +12,9 @@ on:
       - "Tax - OS/apps/mobile/**"
       - ".github/workflows/flutter.yml"
 
+permissions:
+  contents: write
+
 jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
@@ -31,11 +34,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Check formatting
-        run: |
-          dart format --output=none --set-exit-if-changed lib test || {
-            echo "::warning::Dart formatting changes are required; run dart format lib test."
-          }
+      - name: Format Dart sources
+        run: dart format lib test
+
+      - name: Commit formatting changes to this repository's PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style(flutter): apply dart formatter"
+          file_pattern: "Tax - OS/apps/mobile/lib/**/*.dart Tax - OS/apps/mobile/test/**/*.dart"
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed lib test
 
       - name: Analyze
         run: flutter analyze
