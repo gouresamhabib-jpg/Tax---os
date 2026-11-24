@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-import 'app_shell.dart';
+import 'auth_gate.dart';
 
 class TaxOSApp extends StatefulWidget {
   const TaxOSApp({super.key});
@@ -46,7 +46,7 @@ class _TaxOSAppState extends State<TaxOSApp> {
       ),
       home: Directionality(
         textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: AppShell(locale: _locale, onToggleLocale: _toggleLocale),
+        child: const AuthGate(),
       ),
     );
   }
