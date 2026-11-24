@@ -2,19 +2,8 @@ import 'package:material_ui/material_ui.dart';
 
 import 'auth_gate.dart';
 
-class TaxOSApp extends StatefulWidget {
+class TaxOSApp extends StatelessWidget {
   const TaxOSApp({super.key});
-
-  @override
-  State<TaxOSApp> createState() => _TaxOSAppState();
-}
-
-class _TaxOSAppState extends State<TaxOSApp> {
-  String _locale = 'ar';
-
-  void _toggleLocale() {
-    setState(() => _locale = _locale == 'ar' ? 'en' : 'ar');
-  }
 
   @override
   Widget build(BuildContext context) {
