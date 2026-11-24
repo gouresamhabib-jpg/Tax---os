@@ -59,6 +59,7 @@ SELECT set_config('taxos_test.member_a_id', :'member_a_id', true);
 SELECT set_config('taxos_test.member_b_id', :'member_b_id', true);
 SELECT set_config('taxos_test.client_a_id', :'client_a_id', true);
 SELECT set_config('taxos_test.client_b_id', :'client_b_id', true);
+SELECT set_config('taxos_test.member_b_firm_b_id', :'member_b_firm_b_id', true);
 
 -- Owner A assigns Client A to active employee B.
 SET LOCAL ROLE authenticated;
@@ -103,7 +104,7 @@ BEGIN
     VALUES (
       current_setting('taxos_test.firm_a_id')::uuid,
       current_setting('taxos_test.client_a_id')::uuid,
-      :'member_b_firm_b_id'::uuid,
+      current_setting('taxos_test.member_b_firm_b_id')::uuid,
       'supporting',
       current_setting('taxos_test.member_a_id')::uuid
     );
