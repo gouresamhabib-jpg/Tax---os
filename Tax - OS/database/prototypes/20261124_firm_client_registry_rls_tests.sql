@@ -25,6 +25,11 @@ INSERT INTO taxos_prototype.firms (name, created_by)
 VALUES ('Local Test Firm B', current_setting('taxos_test.user_b')::uuid)
 RETURNING id AS firm_b_id \gset
 
+SELECT set_config('taxos_test.user_a', :'user_a', true);
+SELECT set_config('taxos_test.user_b', :'user_b', true);
+SELECT set_config('taxos_test.firm_a_id', :'firm_a_id', true);
+SELECT set_config('taxos_test.firm_b_id', :'firm_b_id', true);
+
 -- Creating each firm must provision exactly one active owner membership.
 DO $$
 BEGIN
@@ -58,6 +63,9 @@ RETURNING id AS client_a_id \gset
 INSERT INTO taxos_prototype.clients (firm_id, client_type, display_name, created_by)
 VALUES (current_setting('taxos_test.firm_b_id')::uuid, 'company', 'Firm B Client', current_setting('taxos_test.user_b')::uuid)
 RETURNING id AS client_b_id \gset
+
+SELECT set_config('taxos_test.client_a_id', :'client_a_id', true);
+SELECT set_config('taxos_test.client_b_id', :'client_b_id', true);
 
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claim.sub', :'user_a', true);
