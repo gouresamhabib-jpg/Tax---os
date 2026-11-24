@@ -40,6 +40,9 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
           (_filter == 'completed' && item.status == WorkItemStatus.completed);
     }).toList()
       ..sort((a, b) {
+        if (a.dueDate == null && b.dueDate == null) {
+          return a.title.compareTo(b.title);
+        }
         if (a.dueDate == null) return 1;
         if (b.dueDate == null) return -1;
         return a.dueDate!.compareTo(b.dueDate!);
