@@ -34,7 +34,7 @@ The following migration files were inspected:
 - `20260717101000_triggers_and_auth.sql`
 - `20260717101100_storage_policies.sql`
 
-The audit does not assume that the duplicate `database/migrations/` directory is synchronized. That must be checked before selecting a canonical migration source.
+The ten migration files listed above were compared against their counterparts in `database/migrations/`; all ten pairs are byte-for-byte identical at the audited branch commit. This confirms current parity for these ten files only. A canonical source-of-truth decision is still required to prevent future drift.
 
 ## 3. Current schema inventory and findings
 
@@ -179,7 +179,7 @@ Only after the new app paths and data migration are tested:
 
 No executable migration should be merged as production-ready until all gates below are satisfied:
 
-- [ ] Canonical migration directory identified; duplicate migration drift resolved.
+- [x] The ten inspected migration pairs under `supabase/migrations/` and `database/migrations/` are byte-for-byte identical at this branch revision; canonical source-of-truth decision remains open.
 - [ ] Actual schema snapshots obtained for local, staging, and production.
 - [ ] Current data volume and cross-tenant anomalies measured.
 - [ ] Egyptian domain model approved independently from tenancy model.
