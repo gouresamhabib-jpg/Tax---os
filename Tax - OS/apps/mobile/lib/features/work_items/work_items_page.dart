@@ -361,6 +361,7 @@ class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String?>(
+                  key: const ValueKey('task_reviewer'),
                   initialValue: _reviewerId,
                   decoration: InputDecoration(labelText: tr('reviewerOptional')),
                   items: [
