@@ -33,15 +33,16 @@ flutter run \
   --dart-define=SUPABASE_PUBLISHABLE_KEY='<local-publishable-key>'
 ```
 
-For the standard Android Emulator host mapping:
+For the Android Emulator, forward the local Supabase port to the emulator loopback first:
 
 ```bash
+adb reverse tcp:54321 tcp:54321
 flutter run \
-  --dart-define=SUPABASE_URL=http://10.0.2.2:54321 \
+  --dart-define=SUPABASE_URL=http://127.0.0.1:54321 \
   --dart-define=SUPABASE_PUBLISHABLE_KEY='<local-publishable-key>'
 ```
 
-Plain HTTP outside loopback is permitted only in debug builds through `allowInsecureHttp: kDebugMode`. Use HTTPS for hosted environments and release builds.
+The stable v2 client accepts local loopback HTTP. Use HTTPS for hosted environments and physical-device testing; do not weaken transport security in the app.
 
 ## 4. Current behavior and limits
 
