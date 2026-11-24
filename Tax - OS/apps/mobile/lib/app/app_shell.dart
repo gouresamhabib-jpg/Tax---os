@@ -115,7 +115,8 @@ class _AppShellState extends State<AppShell> {
               index: _selectedIndex,
               children: [
                 _DashboardPage(locale: widget.locale),
-                ClientsPage(locale: widget.locale, repository: _clientRepository),
+                ClientsPage(
+                    locale: widget.locale, repository: _clientRepository),
                 WorkItemsPage(
                   locale: widget.locale,
                   repository: _workItemRepository,
@@ -349,9 +350,10 @@ class _MetricCard extends StatelessWidget {
                   children: [
                     Text(
                       value,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
                     ),
                     const SizedBox(height: 3),
                     Text(
@@ -397,20 +399,31 @@ class _ObligationTable extends StatelessWidget {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(AppCopy.t(locale, row.$1), style: const TextStyle(fontWeight: FontWeight.w700)),
+                            Text(AppCopy.t(locale, row.$1),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w700)),
                             const SizedBox(height: 5),
                             Text(AppCopy.t(locale, row.$2)),
                             Text(AppCopy.t(locale, row.$3)),
-                            Text(row.$4, style: const TextStyle(color: Colors.black54)),
+                            Text(row.$4,
+                                style: const TextStyle(color: Colors.black54)),
                             const SizedBox(height: 6),
                             _StatusPill(label: AppCopy.t(locale, row.$5)),
                           ],
                         )
                       : Row(
                           children: [
-                            Expanded(flex: 3, child: Text(AppCopy.t(locale, row.$1), style: const TextStyle(fontWeight: FontWeight.w700))),
-                            Expanded(flex: 2, child: Text(AppCopy.t(locale, row.$2))),
-                            Expanded(flex: 2, child: Text(AppCopy.t(locale, row.$3))),
+                            Expanded(
+                                flex: 3,
+                                child: Text(AppCopy.t(locale, row.$1),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700))),
+                            Expanded(
+                                flex: 2,
+                                child: Text(AppCopy.t(locale, row.$2))),
+                            Expanded(
+                                flex: 2,
+                                child: Text(AppCopy.t(locale, row.$3))),
                             Expanded(flex: 2, child: Text(row.$4)),
                             _StatusPill(label: AppCopy.t(locale, row.$5)),
                           ],
@@ -489,7 +502,8 @@ class _ObligationsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _PageHeading(title: tr('obligations'), subtitle: tr('obligationsSubtitle')),
+            _PageHeading(
+                title: tr('obligations'), subtitle: tr('obligationsSubtitle')),
             const SizedBox(height: 18),
             Wrap(
               spacing: 8,
@@ -525,7 +539,8 @@ class _CalendarPage extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
-                    const Icon(Icons.calendar_month_outlined, size: 42, color: Color(0xFF176B67)),
+                    const Icon(Icons.calendar_month_outlined,
+                        size: 42, color: Color(0xFF176B67)),
                     const SizedBox(height: 12),
                     Text(tr('calendarEmpty')),
                   ],
@@ -551,7 +566,8 @@ class _DocumentsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PageHeading(title: tr('documents'), subtitle: tr('documentsSubtitle')),
+          _PageHeading(
+              title: tr('documents'), subtitle: tr('documentsSubtitle')),
           const SizedBox(height: 18),
           Card(
             child: Padding(
@@ -559,7 +575,8 @@ class _DocumentsPage extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
-                    const Icon(Icons.folder_open_outlined, size: 42, color: Color(0xFF176B67)),
+                    const Icon(Icons.folder_open_outlined,
+                        size: 42, color: Color(0xFF176B67)),
                     const SizedBox(height: 12),
                     Text(tr('documentsEmpty')),
                   ],
@@ -591,7 +608,8 @@ class _OfficePage extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.business_outlined)),
+                  leading:
+                      const CircleAvatar(child: Icon(Icons.business_outlined)),
                   title: Text(tr('officeName')),
                   subtitle: Text(tr('workspaceMode')),
                   trailing: const Icon(Icons.more_horiz),

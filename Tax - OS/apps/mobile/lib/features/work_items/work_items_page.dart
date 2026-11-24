@@ -76,16 +76,20 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                       children: [
                         Text(
                           tr('tasksPageTitle'),
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
                         const SizedBox(height: 5),
                         Text(
                           tr('tasksPageSubtitle'),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.black54,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.black54,
+                                  ),
                         ),
                       ],
                     ),
@@ -110,12 +114,14 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline, size: 18, color: Color(0xFF8B651B)),
+                    const Icon(Icons.info_outline,
+                        size: 18, color: Color(0xFF8B651B)),
                     const SizedBox(width: 9),
                     Expanded(
                       child: Text(
                         tr('taskDemoNotice'),
-                        style: const TextStyle(color: Color(0xFF725318), fontSize: 13),
+                        style: const TextStyle(
+                            color: Color(0xFF725318), fontSize: 13),
                       ),
                     ),
                   ],
@@ -128,7 +134,8 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                   for (final filter in ['all', 'open', 'completed'])
                     ChoiceChip(
                       key: ValueKey('task_filter_$filter'),
-                      label: Text(tr(filter == 'all' ? 'all' : 'taskFilter_$filter')),
+                      label: Text(
+                          tr(filter == 'all' ? 'all' : 'taskFilter_$filter')),
                       selected: _filter == filter,
                       onSelected: (_) => setState(() => _filter = filter),
                     ),
@@ -159,7 +166,9 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                       )
                     : Column(
                         children: [
-                          for (var index = 0; index < visibleItems.length; index++)
+                          for (var index = 0;
+                              index < visibleItems.length;
+                              index++)
                             Column(
                               children: [
                                 if (index > 0) const Divider(height: 1),
@@ -170,7 +179,8 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                                   onStatusChanged: (status) {
                                     setState(() {
                                       _repository.save(
-                                        visibleItems[index].copyWith(status: status),
+                                        visibleItems[index]
+                                            .copyWith(status: status),
                                       );
                                     });
                                   },
@@ -193,7 +203,10 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
       builder: (context) => _WorkItemFormDialog(
         locale: widget.locale,
         id: 'task-local-$_nextId',
-        clients: _clientRepository.getAll().where((client) => !client.isArchived).toList(),
+        clients: _clientRepository
+            .getAll()
+            .where((client) => !client.isArchived)
+            .toList(),
       ),
     );
     if (result == null || !mounted) return;
@@ -231,27 +244,33 @@ class _WorkItemTile extends StatelessWidget {
         backgroundColor: const Color(0xFFE8F2F0),
         child: const Icon(Icons.assignment_outlined, color: Color(0xFF176B67)),
       ),
-      title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      title:
+          Text(item.title, style: const TextStyle(fontWeight: FontWeight.w700)),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 7),
         child: Wrap(
           spacing: 14,
           runSpacing: 6,
           children: [
-            _MetaLabel(icon: Icons.business_outlined, label: clientNames[item.clientId] ?? item.clientId),
+            _MetaLabel(
+                icon: Icons.business_outlined,
+                label: clientNames[item.clientId] ?? item.clientId),
             _MetaLabel(
               icon: Icons.person_outline,
-              label: '${tr('assignee')}: ${demoOfficeMemberName(item.assigneeId, locale)}',
+              label:
+                  '${tr('assignee')}: ${demoOfficeMemberName(item.assigneeId, locale)}',
             ),
             if (item.reviewerId != null)
               _MetaLabel(
                 icon: Icons.fact_check_outlined,
-                label: '${tr('reviewer')}: ${demoOfficeMemberName(item.reviewerId!, locale)}',
+                label:
+                    '${tr('reviewer')}: ${demoOfficeMemberName(item.reviewerId!, locale)}',
               ),
             if (item.dueDate != null)
               _MetaLabel(
                 icon: Icons.event_outlined,
-                label: '${tr('dueDate')}: ${_formatDate(item.dueDate!, locale)}',
+                label:
+                    '${tr('dueDate')}: ${_formatDate(item.dueDate!, locale)}',
               ),
           ],
         ),
@@ -350,8 +369,9 @@ class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
                   key: const ValueKey('task_title'),
                   controller: _title,
                   decoration: InputDecoration(labelText: tr('taskTitle')),
-                  validator: (value) =>
-                      value == null || value.trim().isEmpty ? tr('requiredField') : null,
+                  validator: (value) => value == null || value.trim().isEmpty
+                      ? tr('requiredField')
+                      : null,
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
@@ -360,10 +380,12 @@ class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
                   decoration: InputDecoration(labelText: tr('client')),
                   items: [
                     for (final client in widget.clients)
-                      DropdownMenuItem(value: client.id, child: Text(client.name)),
+                      DropdownMenuItem(
+                          value: client.id, child: Text(client.name)),
                   ],
-                  validator: (value) =>
-                      value == null || value.isEmpty ? tr('requiredField') : null,
+                  validator: (value) => value == null || value.isEmpty
+                      ? tr('requiredField')
+                      : null,
                   onChanged: (value) {
                     if (value != null) setState(() => _clientId = value);
                   },
@@ -392,10 +414,13 @@ class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
                 DropdownButtonFormField<String?>(
                   key: const ValueKey('task_reviewer'),
                   initialValue: _reviewerId,
-                  decoration: InputDecoration(labelText: tr('reviewerOptional')),
+                  decoration:
+                      InputDecoration(labelText: tr('reviewerOptional')),
                   items: [
-                    DropdownMenuItem<String?>(value: null, child: Text(tr('noReviewer'))),
-                    for (final member in demoOfficeMembers.where((m) => m.id != _assigneeId))
+                    DropdownMenuItem<String?>(
+                        value: null, child: Text(tr('noReviewer'))),
+                    for (final member
+                        in demoOfficeMembers.where((m) => m.id != _assigneeId))
                       DropdownMenuItem<String?>(
                         value: member.id,
                         child: Text(member.nameFor(widget.locale)),

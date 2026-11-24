@@ -15,7 +15,8 @@ class AppCopy {
       'noReviewer': 'بدون مراجع',
       'responsibleEmployee': 'المحاسب المسؤول عن العميل',
       'unassigned': 'غير محدد',
-      'taskDemoNotice': 'المهام وأسماء الموظفين هنا تجريبية ومحفوظة داخل التطبيق فقط.',
+      'taskDemoNotice':
+          'المهام وأسماء الموظفين هنا تجريبية ومحفوظة داخل التطبيق فقط.',
       'tasksCount': 'مهمة',
       'taskFilter_open': 'مفتوحة',
       'taskFilter_completed': 'مكتملة',
@@ -116,7 +117,8 @@ class AppCopy {
       'noReviewer': 'No reviewer',
       'responsibleEmployee': 'Client owner',
       'unassigned': 'Unassigned',
-      'taskDemoNotice': 'Tasks and staff names are demo data stored only in this app.',
+      'taskDemoNotice':
+          'Tasks and staff names are demo data stored only in this app.',
       'tasksCount': 'tasks',
       'taskFilter_open': 'Open',
       'taskFilter_completed': 'Completed',
