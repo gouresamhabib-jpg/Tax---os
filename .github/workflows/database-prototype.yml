@@ -7,7 +7,7 @@ on:
       - ".github/workflows/database-prototype.yml"
   push:
     branches:
-      - main
+      - '**'
     paths:
       - "Tax - OS/database/prototypes/**"
       - ".github/workflows/database-prototype.yml"
