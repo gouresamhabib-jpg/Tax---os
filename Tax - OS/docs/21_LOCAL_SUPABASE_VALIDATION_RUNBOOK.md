@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-The PostgreSQL 16 GitHub Actions compatibility job now executes the firm/client and client-assignment prototypes with a minimal Auth compatibility shim. This runbook defines the next validation gate against the actual local Supabase stack, including its Auth schema, roles, and `auth.uid()` implementation.
+GitHub Actions now runs the prototypes against both PostgreSQL 16 with a minimal Auth compatibility shim and a disposable local Supabase stack with real Supabase Auth users, roles, and `auth.uid()`. This runbook documents how to reproduce the Supabase-specific validation locally before any hosted deployment.
 
 This is a disposable local test only. Do not use a hosted or production Supabase project.
 
