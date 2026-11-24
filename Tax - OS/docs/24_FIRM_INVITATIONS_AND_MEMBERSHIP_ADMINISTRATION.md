@@ -25,7 +25,7 @@ The SQL and test files are isolated under `database/prototypes/`. They do not al
 - The initial owner is provisioned atomically when a firm is created.
 - A second owner is not supported by this prototype.
 - Only the owner can appoint an admin or manage an existing admin.
-- Admins cannot change their own role/status, appoint admins, or manage owner/admin memberships.
+- Admins cannot change their own role/status, appoint admins, revoke an admin invitation, or manage owner/admin memberships.
 - Members cannot change their own role or membership status.
 - Owner membership cannot be modified through the member administration RPCs.
 - Revocation is terminal in this prototype. A revoked person must be re-invited through a separately designed re-onboarding process; the unique firm/user membership row is not silently reused.
