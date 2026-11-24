@@ -51,6 +51,13 @@ class AppCopy {
       'allClients': 'كل العملاء',
       'companies': 'شركات',
       'individuals': 'أفراد',
+      'oct2026': 'أكتوبر 2026',
+      'taxYear2025': 'السنة الضريبية 2025',
+      'clientAlNoor': 'شركة النور للتجارة',
+      'clientAlAmal': 'مؤسسة الأمل',
+      'clientDelta': 'دلتا للخدمات',
+      'clientAhmed': 'أحمد محمود',
+      'noClientsFound': 'لا توجد نتائج مطابقة.',
     },
     'en': {
       'dashboard': 'Dashboard',
@@ -101,6 +108,13 @@ class AppCopy {
       'allClients': 'All clients',
       'companies': 'Companies',
       'individuals': 'Individuals',
+      'oct2026': 'October 2026',
+      'taxYear2025': 'Tax year 2025',
+      'clientAlNoor': 'Al Noor Trading Co.',
+      'clientAlAmal': 'Al Amal Establishment',
+      'clientDelta': 'Delta Services',
+      'clientAhmed': 'Ahmed Mahmoud',
+      'noClientsFound': 'No matching clients found.',
     },
   };
 
