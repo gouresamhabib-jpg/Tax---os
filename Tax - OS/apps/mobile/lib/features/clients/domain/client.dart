@@ -13,6 +13,7 @@ class Client {
     this.address = '',
     this.notes = '',
     this.responsibleEmployeeId = '',
+    this.isArchived = false,
   });
 
   final String id;
@@ -26,4 +27,20 @@ class Client {
   final String address;
   final String notes;
   final String responsibleEmployeeId;
+  final bool isArchived;
+
+  Client copyWith({bool? isArchived}) => Client(
+        id: id,
+        name: name,
+        type: type,
+        taxId: taxId,
+        vatNumber: vatNumber,
+        contactName: contactName,
+        phone: phone,
+        email: email,
+        address: address,
+        notes: notes,
+        responsibleEmployeeId: responsibleEmployeeId,
+        isArchived: isArchived ?? this.isArchived,
+      );
 }
