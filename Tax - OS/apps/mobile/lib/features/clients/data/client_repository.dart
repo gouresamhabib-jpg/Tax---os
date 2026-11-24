@@ -47,7 +47,16 @@ class InMemoryClientRepository implements ClientRepository {
   }
 
   @override
-  void delete(String clientId) {
-    _clients.removeWhere((client) => client.id == clientId);
+  void archive(String clientId) {
+    final index = _clients.indexWhere((client) => client.id == clientId);
+    if (index == -1) return;
+    _clients[index] = _clients[index].copyWith(isArchived: true);
+  }
+
+  @override
+  void restore(String clientId) {
+    final index = _clients.indexWhere((client) => client.id == clientId);
+    if (index == -1) return;
+    _clients[index] = _clients[index].copyWith(isArchived: false);
   }
 }
