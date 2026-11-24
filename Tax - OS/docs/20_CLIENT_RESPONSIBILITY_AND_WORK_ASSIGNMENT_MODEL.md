@@ -48,6 +48,7 @@ The accompanying SQL is an additive prototype extension for the isolated `taxos_
 - A work item is a unit of office work, not a tax obligation status.
 - Initial statuses: `todo`, `in_progress`, `blocked`, `completed`, `cancelled`.
 - Initial priorities: `low`, `normal`, `high`, `urgent`.
+- `completed_at` is database-controlled: it is set when status changes to `completed` and cleared when the task is reopened.
 - Each work item belongs to one client and one firm.
 - The assignee is required; the reviewer is optional.
 - Owner/admin/manager may create, assign, and reassign work.
