@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'app_copy.dart';
 import '../features/clients/clients_page.dart';
+import '../features/work_items/work_items_page.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -25,6 +26,7 @@ class _AppShellState extends State<AppShell> {
   static const _destinations = <_DestinationData>[
     _DestinationData('dashboard', Icons.space_dashboard_outlined),
     _DestinationData('clients', Icons.people_alt_outlined),
+    _DestinationData('tasksPageTitle', Icons.checklist_outlined),
     _DestinationData('obligations', Icons.assignment_outlined),
     _DestinationData('calendar', Icons.calendar_month_outlined),
     _DestinationData('documents', Icons.folder_open_outlined),
@@ -103,6 +105,7 @@ class _AppShellState extends State<AppShell> {
               children: [
                 _DashboardPage(locale: widget.locale),
                 ClientsPage(locale: widget.locale),
+                WorkItemsPage(locale: widget.locale),
                 _ObligationsPage(locale: widget.locale),
                 _CalendarPage(locale: widget.locale),
                 _DocumentsPage(locale: widget.locale),
