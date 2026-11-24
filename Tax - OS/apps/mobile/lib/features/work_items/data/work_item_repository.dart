@@ -8,7 +8,7 @@ abstract interface class WorkItemRepository {
 
 class InMemoryWorkItemRepository implements WorkItemRepository {
   InMemoryWorkItemRepository({List<WorkItem>? initialItems})
-      : _items = List.of(initialItems ?? demoWorkItems);
+    : _items = List.of(initialItems ?? demoWorkItems);
 
   final List<WorkItem> _items;
 

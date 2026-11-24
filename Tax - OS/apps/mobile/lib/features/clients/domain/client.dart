@@ -30,17 +30,17 @@ class Client {
   final bool isArchived;
 
   Client copyWith({bool? isArchived}) => Client(
-        id: id,
-        name: name,
-        type: type,
-        taxId: taxId,
-        vatNumber: vatNumber,
-        contactName: contactName,
-        phone: phone,
-        email: email,
-        address: address,
-        notes: notes,
-        responsibleEmployeeId: responsibleEmployeeId,
-        isArchived: isArchived ?? this.isArchived,
-      );
+    id: id,
+    name: name,
+    type: type,
+    taxId: taxId,
+    vatNumber: vatNumber,
+    contactName: contactName,
+    phone: phone,
+    email: email,
+    address: address,
+    notes: notes,
+    responsibleEmployeeId: responsibleEmployeeId,
+    isArchived: isArchived ?? this.isArchived,
+  );
 }

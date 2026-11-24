@@ -35,9 +35,11 @@ class _ClientsPageState extends State<ClientsPage> {
   Widget build(BuildContext context) {
     final query = _query.trim().toLowerCase();
     final filtered = _repository.getAll().where((client) {
-      final matchesArchive =
-          _filter == 'archived' ? client.isArchived : !client.isArchived;
-      final matchesFilter = matchesArchive &&
+      final matchesArchive = _filter == 'archived'
+          ? client.isArchived
+          : !client.isArchived;
+      final matchesFilter =
+          matchesArchive &&
           (_filter == 'all' ||
               _filter == 'archived' ||
               (_filter == 'companies' && client.type == ClientType.company) ||
@@ -70,20 +72,14 @@ class _ClientsPageState extends State<ClientsPage> {
                       children: [
                         Text(
                           tr('clients'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 5),
                         Text(
                           tr('clientsSubtitle'),
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.black54,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.black54),
                         ),
                       ],
                     ),
@@ -108,14 +104,19 @@ class _ClientsPageState extends State<ClientsPage> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline,
-                        size: 18, color: Color(0xFF8B651B)),
+                    const Icon(
+                      Icons.info_outline,
+                      size: 18,
+                      color: Color(0xFF8B651B),
+                    ),
                     const SizedBox(width: 9),
                     Expanded(
                       child: Text(
                         tr('demoNotice'),
                         style: const TextStyle(
-                            color: Color(0xFF725318), fontSize: 13),
+                          color: Color(0xFF725318),
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ],
@@ -148,7 +149,7 @@ class _ClientsPageState extends State<ClientsPage> {
                     'all',
                     'companies',
                     'individuals',
-                    'archived'
+                    'archived',
                   ])
                     ChoiceChip(
                       key: ValueKey('client_filter_$filter'),
@@ -168,9 +169,9 @@ class _ClientsPageState extends State<ClientsPage> {
                   const Spacer(),
                   Text(
                     tr('localDemoStorage'),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.black54,
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.black54),
                   ),
                 ],
               ),
@@ -203,14 +204,17 @@ class _ClientsPageState extends State<ClientsPage> {
                                   title: Text(
                                     filtered[index].name,
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                   subtitle: Text(
                                     [
-                                      tr(filtered[index].type ==
-                                              ClientType.company
-                                          ? 'companies'
-                                          : 'individuals'),
+                                      tr(
+                                        filtered[index].type ==
+                                                ClientType.company
+                                            ? 'companies'
+                                            : 'individuals',
+                                      ),
                                       if (filtered[index].taxId.isNotEmpty)
                                         '${tr('taxId')}: ${filtered[index].taxId}',
                                       if (filtered[index].phone.isNotEmpty)
@@ -223,27 +227,35 @@ class _ClientsPageState extends State<ClientsPage> {
                                     onSelected: (action) {
                                       if (action == 'edit') {
                                         _openClientForm(
-                                            client: filtered[index]);
+                                          client: filtered[index],
+                                        );
                                       } else if (action == 'archive') {
                                         _confirmArchive(filtered[index]);
                                       } else if (action == 'restore') {
-                                        setState(() => _repository
-                                            .restore(filtered[index].id));
+                                        setState(
+                                          () => _repository.restore(
+                                            filtered[index].id,
+                                          ),
+                                        );
                                       }
                                     },
                                     itemBuilder: (context) => [
                                       if (!filtered[index].isArchived)
                                         PopupMenuItem(
-                                            value: 'edit',
-                                            child: Text(tr('edit'))),
+                                          value: 'edit',
+                                          child: Text(tr('edit')),
+                                        ),
                                       PopupMenuItem(
                                         value: filtered[index].isArchived
                                             ? 'restore'
                                             : 'archive',
-                                        child: Text(tr(
+                                        child: Text(
+                                          tr(
                                             filtered[index].isArchived
                                                 ? 'restoreClient'
-                                                : 'archiveClient')),
+                                                : 'archiveClient',
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -318,14 +330,18 @@ class _ClientsPageState extends State<ClientsPage> {
             children: [
               Text(
                 client.name,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 6),
-              Text(tr(client.type == ClientType.company
-                  ? 'companies'
-                  : 'individuals')),
+              Text(
+                tr(
+                  client.type == ClientType.company
+                      ? 'companies'
+                      : 'individuals',
+                ),
+              ),
               const Divider(height: 24),
               _DetailRow(label: tr('taxId'), value: client.taxId),
               _DetailRow(label: tr('vatNumber'), value: client.vatNumber),
@@ -339,7 +355,9 @@ class _ClientsPageState extends State<ClientsPage> {
                 value: client.responsibleEmployeeId.isEmpty
                     ? tr('unassigned')
                     : demoOfficeMemberName(
-                        client.responsibleEmployeeId, widget.locale),
+                        client.responsibleEmployeeId,
+                        widget.locale,
+                      ),
               ),
               const SizedBox(height: 14),
               Align(
@@ -462,11 +480,13 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
                   decoration: InputDecoration(labelText: tr('clientType')),
                   items: [
                     DropdownMenuItem(
-                        value: ClientType.company,
-                        child: Text(tr('companies'))),
+                      value: ClientType.company,
+                      child: Text(tr('companies')),
+                    ),
                     DropdownMenuItem(
-                        value: ClientType.individual,
-                        child: Text(tr('individuals'))),
+                      value: ClientType.individual,
+                      child: Text(tr('individuals')),
+                    ),
                   ],
                   onChanged: (value) {
                     if (value != null) setState(() => _kind = value);
@@ -475,8 +495,9 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: _responsibleEmployeeId,
-                  decoration:
-                      InputDecoration(labelText: tr('responsibleEmployee')),
+                  decoration: InputDecoration(
+                    labelText: tr('responsibleEmployee'),
+                  ),
                   items: [
                     DropdownMenuItem(value: '', child: Text(tr('unassigned'))),
                     for (final member in demoOfficeMembers)
@@ -492,18 +513,23 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
                 ),
                 const SizedBox(height: 12),
                 _field(
-                    controller: _name, label: tr('clientName'), required: true),
+                  controller: _name,
+                  label: tr('clientName'),
+                  required: true,
+                ),
                 _field(controller: _taxId, label: tr('taxId')),
                 _field(controller: _vatNumber, label: tr('vatNumber')),
                 _field(controller: _contactName, label: tr('contactPerson')),
                 _field(
-                    controller: _phone,
-                    label: tr('phone'),
-                    keyboardType: TextInputType.phone),
+                  controller: _phone,
+                  label: tr('phone'),
+                  keyboardType: TextInputType.phone,
+                ),
                 _field(
-                    controller: _email,
-                    label: tr('email'),
-                    keyboardType: TextInputType.emailAddress),
+                  controller: _email,
+                  label: tr('email'),
+                  keyboardType: TextInputType.emailAddress,
+                ),
                 _field(controller: _address, label: tr('address')),
                 _field(controller: _notes, label: tr('notes'), maxLines: 2),
               ],
@@ -541,8 +567,8 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
         decoration: InputDecoration(labelText: label),
         validator: required
             ? (value) => value == null || value.trim().isEmpty
-                ? tr('requiredField')
-                : null
+                  ? tr('requiredField')
+                  : null
             : null,
       ),
     );

@@ -36,9 +36,6 @@ void main() {
 
   test('repository exposes an unmodifiable client collection', () {
     final repository = InMemoryClientRepository();
-    expect(
-      () => repository.getAll().clear(),
-      throwsUnsupportedError,
-    );
+    expect(() => repository.getAll().clear(), throwsUnsupportedError);
   });
 }

@@ -3,7 +3,7 @@ import '../domain/client_repository.dart';
 
 class InMemoryClientRepository implements ClientRepository {
   InMemoryClientRepository({List<Client>? initialClients})
-      : _clients = List.of(initialClients ?? demoClients);
+    : _clients = List.of(initialClients ?? demoClients);
 
   final List<Client> _clients;
 
@@ -26,11 +26,7 @@ class InMemoryClientRepository implements ClientRepository {
       type: ClientType.company,
       responsibleEmployeeId: 'member-3',
     ),
-    Client(
-      id: 'demo-4',
-      name: 'أحمد محمود',
-      type: ClientType.individual,
-    ),
+    Client(id: 'demo-4', name: 'أحمد محمود', type: ClientType.individual),
   ];
 
   @override

@@ -46,10 +46,7 @@ class _TaxOSAppState extends State<TaxOSApp> {
       ),
       home: Directionality(
         textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: AppShell(
-          locale: _locale,
-          onToggleLocale: _toggleLocale,
-        ),
+        child: AppShell(locale: _locale, onToggleLocale: _toggleLocale),
       ),
     );
   }

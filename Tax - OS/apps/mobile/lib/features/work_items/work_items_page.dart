@@ -43,21 +43,22 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
   Widget build(BuildContext context) {
     final allItems = _repository.getAll();
     final clients = _clientRepository.getAll();
-    final visibleItems = allItems.where((item) {
-      return _filter == 'all' ||
-          (_filter == 'open' &&
-              item.status != WorkItemStatus.completed &&
-              item.status != WorkItemStatus.cancelled) ||
-          (_filter == 'completed' && item.status == WorkItemStatus.completed);
-    }).toList()
-      ..sort((a, b) {
-        if (a.dueDate == null && b.dueDate == null) {
-          return a.title.compareTo(b.title);
-        }
-        if (a.dueDate == null) return 1;
-        if (b.dueDate == null) return -1;
-        return a.dueDate!.compareTo(b.dueDate!);
-      });
+    final visibleItems =
+        allItems.where((item) {
+          return _filter == 'all' ||
+              (_filter == 'open' &&
+                  item.status != WorkItemStatus.completed &&
+                  item.status != WorkItemStatus.cancelled) ||
+              (_filter == 'completed' &&
+                  item.status == WorkItemStatus.completed);
+        }).toList()..sort((a, b) {
+          if (a.dueDate == null && b.dueDate == null) {
+            return a.title.compareTo(b.title);
+          }
+          if (a.dueDate == null) return 1;
+          if (b.dueDate == null) return -1;
+          return a.dueDate!.compareTo(b.dueDate!);
+        });
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -76,20 +77,14 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                       children: [
                         Text(
                           tr('tasksPageTitle'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: 5),
                         Text(
                           tr('tasksPageSubtitle'),
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.black54,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.black54),
                         ),
                       ],
                     ),
@@ -114,14 +109,19 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline,
-                        size: 18, color: Color(0xFF8B651B)),
+                    const Icon(
+                      Icons.info_outline,
+                      size: 18,
+                      color: Color(0xFF8B651B),
+                    ),
                     const SizedBox(width: 9),
                     Expanded(
                       child: Text(
                         tr('taskDemoNotice'),
                         style: const TextStyle(
-                            color: Color(0xFF725318), fontSize: 13),
+                          color: Color(0xFF725318),
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ],
@@ -135,7 +135,8 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                     ChoiceChip(
                       key: ValueKey('task_filter_$filter'),
                       label: Text(
-                          tr(filter == 'all' ? 'all' : 'taskFilter_$filter')),
+                        tr(filter == 'all' ? 'all' : 'taskFilter_$filter'),
+                      ),
                       selected: _filter == filter,
                       onSelected: (_) => setState(() => _filter = filter),
                     ),
@@ -151,9 +152,9 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                   const Spacer(),
                   Text(
                     tr('localDemoStorage'),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.black54,
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.black54),
                   ),
                 ],
               ),
@@ -166,9 +167,11 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                       )
                     : Column(
                         children: [
-                          for (var index = 0;
-                              index < visibleItems.length;
-                              index++)
+                          for (
+                            var index = 0;
+                            index < visibleItems.length;
+                            index++
+                          )
                             Column(
                               children: [
                                 if (index > 0) const Divider(height: 1),
@@ -179,8 +182,9 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                                   onStatusChanged: (status) {
                                     setState(() {
                                       _repository.save(
-                                        visibleItems[index]
-                                            .copyWith(status: status),
+                                        visibleItems[index].copyWith(
+                                          status: status,
+                                        ),
                                       );
                                     });
                                   },
@@ -234,9 +238,7 @@ class _WorkItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final clientNames = {
-      for (final client in clients) client.id: client.name,
-    };
+    final clientNames = {for (final client in clients) client.id: client.name};
     return ListTile(
       key: ValueKey('work_item_${item.id}'),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
@@ -244,8 +246,10 @@ class _WorkItemTile extends StatelessWidget {
         backgroundColor: const Color(0xFFE8F2F0),
         child: const Icon(Icons.assignment_outlined, color: Color(0xFF176B67)),
       ),
-      title:
-          Text(item.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      title: Text(
+        item.title,
+        style: const TextStyle(fontWeight: FontWeight.w700),
+      ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 7),
         child: Wrap(
@@ -253,8 +257,9 @@ class _WorkItemTile extends StatelessWidget {
           runSpacing: 6,
           children: [
             _MetaLabel(
-                icon: Icons.business_outlined,
-                label: clientNames[item.clientId] ?? item.clientId),
+              icon: Icons.business_outlined,
+              label: clientNames[item.clientId] ?? item.clientId,
+            ),
             _MetaLabel(
               icon: Icons.person_outline,
               label:
@@ -307,13 +312,13 @@ class _MetaLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 15, color: Colors.black54),
-          const SizedBox(width: 4),
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 15, color: Colors.black54),
+      const SizedBox(width: 4),
+      Text(label, style: Theme.of(context).textTheme.bodySmall),
+    ],
+  );
 }
 
 class _WorkItemFormDialog extends StatefulWidget {
@@ -381,7 +386,9 @@ class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
                   items: [
                     for (final client in widget.clients)
                       DropdownMenuItem(
-                          value: client.id, child: Text(client.name)),
+                        value: client.id,
+                        child: Text(client.name),
+                      ),
                   ],
                   validator: (value) => value == null || value.isEmpty
                       ? tr('requiredField')
@@ -414,13 +421,17 @@ class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
                 DropdownButtonFormField<String?>(
                   key: const ValueKey('task_reviewer'),
                   initialValue: _reviewerId,
-                  decoration:
-                      InputDecoration(labelText: tr('reviewerOptional')),
+                  decoration: InputDecoration(
+                    labelText: tr('reviewerOptional'),
+                  ),
                   items: [
                     DropdownMenuItem<String?>(
-                        value: null, child: Text(tr('noReviewer'))),
-                    for (final member
-                        in demoOfficeMembers.where((m) => m.id != _assigneeId))
+                      value: null,
+                      child: Text(tr('noReviewer')),
+                    ),
+                    for (final member in demoOfficeMembers.where(
+                      (m) => m.id != _assigneeId,
+                    ))
                       DropdownMenuItem<String?>(
                         value: member.id,
                         child: Text(member.nameFor(widget.locale)),

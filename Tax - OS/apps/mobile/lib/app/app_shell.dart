@@ -73,10 +73,7 @@ class _AppShellState extends State<AppShell> {
               ),
             ),
             const SizedBox(width: 10),
-            const Text(
-              'TaxOS',
-              style: TextStyle(fontWeight: FontWeight.w800),
-            ),
+            const Text('TaxOS', style: TextStyle(fontWeight: FontWeight.w800)),
           ],
         ),
         actions: [
@@ -116,7 +113,9 @@ class _AppShellState extends State<AppShell> {
               children: [
                 _DashboardPage(locale: widget.locale),
                 ClientsPage(
-                    locale: widget.locale, repository: _clientRepository),
+                  locale: widget.locale,
+                  repository: _clientRepository,
+                ),
                 WorkItemsPage(
                   locale: widget.locale,
                   repository: _workItemRepository,
@@ -169,50 +168,47 @@ class _DemoBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: const Color(0xFFE8F2F0),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xFF176B67),
-            fontWeight: FontWeight.w700,
-            fontSize: 11,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE8F2F0),
+      borderRadius: BorderRadius.circular(30),
+    ),
+    child: Text(
+      label,
+      style: const TextStyle(
+        color: Color(0xFF176B67),
+        fontWeight: FontWeight.w700,
+        fontSize: 11,
+      ),
+    ),
+  );
 }
 
 class _PageHeading extends StatelessWidget {
-  const _PageHeading({
-    required this.title,
-    required this.subtitle,
-  });
+  const _PageHeading({required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
 
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            subtitle,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
-                ),
-          ),
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        title,
+        style: Theme.of(
+          context,
+        ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+      ),
+      const SizedBox(height: 5),
+      Text(
+        subtitle,
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: Colors.black54),
+      ),
+    ],
+  );
 }
 
 class _PageFrame extends StatelessWidget {
@@ -222,14 +218,14 @@ class _PageFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1180),
-            child: child,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.all(24),
+    child: Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1180),
+        child: child,
+      ),
+    ),
+  );
 }
 
 class _DashboardPage extends StatelessWidget {
@@ -252,10 +248,7 @@ class _DashboardPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PageHeading(
-            title: tr('welcome'),
-            subtitle: tr('welcomeSubtitle'),
-          ),
+          _PageHeading(title: tr('welcome'), subtitle: tr('welcomeSubtitle')),
           const SizedBox(height: 18),
           _DemoNotice(text: tr('demoNotice')),
           const SizedBox(height: 20),
@@ -264,8 +257,8 @@ class _DashboardPage extends StatelessWidget {
               final columns = constraints.maxWidth >= 850
                   ? 4
                   : constraints.maxWidth >= 520
-                      ? 2
-                      : 1;
+                  ? 2
+                  : 1;
               return GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -293,9 +286,9 @@ class _DashboardPage extends StatelessWidget {
               Expanded(
                 child: Text(
                   tr('recentWork'),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
                 ),
               ),
             ],
@@ -329,46 +322,45 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Row(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE8F2F0),
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: Icon(icon, color: const Color(0xFF176B67)),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      value,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      label,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.black54,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    child: Padding(
+      padding: const EdgeInsets.all(18),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE8F2F0),
+              borderRadius: BorderRadius.circular(13),
+            ),
+            child: Icon(icon, color: const Color(0xFF176B67)),
           ),
-        ),
-      );
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  label,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _ObligationTable extends StatelessWidget {
@@ -399,14 +391,19 @@ class _ObligationTable extends StatelessWidget {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(AppCopy.t(locale, row.$1),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w700)),
+                            Text(
+                              AppCopy.t(locale, row.$1),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                             const SizedBox(height: 5),
                             Text(AppCopy.t(locale, row.$2)),
                             Text(AppCopy.t(locale, row.$3)),
-                            Text(row.$4,
-                                style: const TextStyle(color: Colors.black54)),
+                            Text(
+                              row.$4,
+                              style: const TextStyle(color: Colors.black54),
+                            ),
                             const SizedBox(height: 6),
                             _StatusPill(label: AppCopy.t(locale, row.$5)),
                           ],
@@ -414,16 +411,22 @@ class _ObligationTable extends StatelessWidget {
                       : Row(
                           children: [
                             Expanded(
-                                flex: 3,
-                                child: Text(AppCopy.t(locale, row.$1),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w700))),
+                              flex: 3,
+                              child: Text(
+                                AppCopy.t(locale, row.$1),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
                             Expanded(
-                                flex: 2,
-                                child: Text(AppCopy.t(locale, row.$2))),
+                              flex: 2,
+                              child: Text(AppCopy.t(locale, row.$2)),
+                            ),
                             Expanded(
-                                flex: 2,
-                                child: Text(AppCopy.t(locale, row.$3))),
+                              flex: 2,
+                              child: Text(AppCopy.t(locale, row.$3)),
+                            ),
                             Expanded(flex: 2, child: Text(row.$4)),
                             _StatusPill(label: AppCopy.t(locale, row.$5)),
                           ],
@@ -445,20 +448,20 @@ class _StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: const Color(0xFFE8F2F0),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xFF176B67),
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE8F2F0),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Text(
+      label,
+      style: const TextStyle(
+        color: Color(0xFF176B67),
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 }
 
 class _DemoNotice extends StatelessWidget {
@@ -468,26 +471,26 @@ class _DemoNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(13),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF5DF),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFF0E0B8)),
+    width: double.infinity,
+    padding: const EdgeInsets.all(13),
+    decoration: BoxDecoration(
+      color: const Color(0xFFFFF5DF),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: const Color(0xFFF0E0B8)),
+    ),
+    child: Row(
+      children: [
+        const Icon(Icons.info_outline, size: 18, color: Color(0xFF8B651B)),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(color: Color(0xFF725318), fontSize: 13),
+          ),
         ),
-        child: Row(
-          children: [
-            const Icon(Icons.info_outline, size: 18, color: Color(0xFF8B651B)),
-            const SizedBox(width: 9),
-            Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(color: Color(0xFF725318), fontSize: 13),
-              ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 }
 
 class _ObligationsPage extends StatelessWidget {
@@ -499,24 +502,26 @@ class _ObligationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PageFrame(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _PageHeading(
+          title: tr('obligations'),
+          subtitle: tr('obligationsSubtitle'),
+        ),
+        const SizedBox(height: 18),
+        Wrap(
+          spacing: 8,
           children: [
-            _PageHeading(
-                title: tr('obligations'), subtitle: tr('obligationsSubtitle')),
-            const SizedBox(height: 18),
-            Wrap(
-              spacing: 8,
-              children: [
-                for (final key in ['all', 'inProgress', 'readyReview', 'filed'])
-                  Chip(label: Text(tr(key))),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _ObligationTable(locale: locale),
+            for (final key in ['all', 'inProgress', 'readyReview', 'filed'])
+              Chip(label: Text(tr(key))),
           ],
         ),
-      );
+        const SizedBox(height: 12),
+        _ObligationTable(locale: locale),
+      ],
+    ),
+  );
 }
 
 class _CalendarPage extends StatelessWidget {
@@ -539,8 +544,11 @@ class _CalendarPage extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
-                    const Icon(Icons.calendar_month_outlined,
-                        size: 42, color: Color(0xFF176B67)),
+                    const Icon(
+                      Icons.calendar_month_outlined,
+                      size: 42,
+                      color: Color(0xFF176B67),
+                    ),
                     const SizedBox(height: 12),
                     Text(tr('calendarEmpty')),
                   ],
@@ -567,7 +575,9 @@ class _DocumentsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _PageHeading(
-              title: tr('documents'), subtitle: tr('documentsSubtitle')),
+            title: tr('documents'),
+            subtitle: tr('documentsSubtitle'),
+          ),
           const SizedBox(height: 18),
           Card(
             child: Padding(
@@ -575,8 +585,11 @@ class _DocumentsPage extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
-                    const Icon(Icons.folder_open_outlined,
-                        size: 42, color: Color(0xFF176B67)),
+                    const Icon(
+                      Icons.folder_open_outlined,
+                      size: 42,
+                      color: Color(0xFF176B67),
+                    ),
                     const SizedBox(height: 12),
                     Text(tr('documentsEmpty')),
                   ],
@@ -608,8 +621,9 @@ class _OfficePage extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading:
-                      const CircleAvatar(child: Icon(Icons.business_outlined)),
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.business_outlined),
+                  ),
                   title: Text(tr('officeName')),
                   subtitle: Text(tr('workspaceMode')),
                   trailing: const Icon(Icons.more_horiz),
