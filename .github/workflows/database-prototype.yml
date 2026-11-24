@@ -90,18 +90,26 @@ jobs:
 
       - name: Create disposable Supabase Auth users
         run: |
-          USER_A=$(curl --fail-with-body --silent --show-error \
-            --request POST "$API_URL/auth/v1/signup" \
-            --header "apikey: $ANON_KEY" \
-            --header "Content-Type: application/json" \
-            --data '{"email":"taxos-user-a@example.test","password":"TaxOS-Test-Password-A-2026!"}' \
-            | jq -r '.id')
-          USER_B=$(curl --fail-with-body --silent --show-error \
-            --request POST "$API_URL/auth/v1/signup" \
-            --header "apikey: $ANON_KEY" \
-            --header "Content-Type: application/json" \
-            --data '{"email":"taxos-user-b@example.test","password":"TaxOS-Test-Password-B-2026!"}' \
-            | jq -r '.id')
+          create_user() {
+            email="$1"
+            password="$2"
+            response=$(curl --silent --show-error --write-out '\n%{http_code}' \
+              --request POST "$API_URL/auth/v1/signup" \
+              --header "apikey: $ANON_KEY" \
+              --header "Authorization: Bearer $ANON_KEY" \
+              --header "Content-Type: application/json" \
+              --data-raw "{\"email\":\"$email\",\"password\":\"$password\"}")
+            http_code="${response##*$'\n'}"
+            body="${response%$'\n'*}"
+            if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+              echo "Supabase Auth signup failed with HTTP $http_code:"
+              echo "$body"
+              return 1
+            fi
+            echo "$body" | jq -r '.id // .user.id'
+          }
+          USER_A=$(create_user "taxos-user-a@example.com" "TaxOS-Test-Password-A-2026!")
+          USER_B=$(create_user "taxos-user-b@example.com" "TaxOS-Test-Password-B-2026!")
           test -n "$USER_A" && test "$USER_A" != "null"
           test -n "$USER_B" && test "$USER_B" != "null"
           echo "TAXOS_TEST_USER_A=$USER_A" >> "$GITHUB_ENV"
