@@ -1,51 +1,21 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/app_copy.dart';
-
-enum _ClientKind { company, individual }
-
-class _ClientRecord {
-  const _ClientRecord({
-    required this.id,
-    required this.name,
-    required this.kind,
-    this.taxId = '',
-    this.vatNumber = '',
-    this.contactName = '',
-    this.phone = '',
-    this.email = '',
-    this.address = '',
-    this.notes = '',
-  });
-
-  final String id;
-  final String name;
-  final _ClientKind kind;
-  final String taxId;
-  final String vatNumber;
-  final String contactName;
-  final String phone;
-  final String email;
-  final String address;
-  final String notes;
-}
+import 'data/client_repository.dart';
+import 'domain/client.dart';
 
 class ClientsPage extends StatefulWidget {
-  const ClientsPage({required this.locale, super.key});
+  const ClientsPage({required this.locale, this.repository, super.key});
 
   final String locale;
+  final ClientRepository? repository;
 
   @override
   State<ClientsPage> createState() => _ClientsPageState();
 }
 
 class _ClientsPageState extends State<ClientsPage> {
-  final List<_ClientRecord> _clients = [
-    const _ClientRecord(id: 'demo-1', name: 'شركة النور للتجارة', kind: _ClientKind.company),
-    const _ClientRecord(id: 'demo-2', name: 'مؤسسة الأمل', kind: _ClientKind.company),
-    const _ClientRecord(id: 'demo-3', name: 'دلتا للخدمات', kind: _ClientKind.company),
-    const _ClientRecord(id: 'demo-4', name: 'أحمد محمود', kind: _ClientKind.individual),
-  ];
+  late final ClientRepository _repository;
 
   String _query = '';
   String _filter = 'all';
@@ -54,12 +24,18 @@ class _ClientsPageState extends State<ClientsPage> {
   String tr(String key) => AppCopy.t(widget.locale, key);
 
   @override
+  void initState() {
+    super.initState();
+    _repository = widget.repository ?? InMemoryClientRepository();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final query = _query.trim().toLowerCase();
-    final filtered = _clients.where((client) {
+    final filtered = _repository.getAll().where((client) {
       final matchesFilter = _filter == 'all' ||
-          (_filter == 'companies' && client.kind == _ClientKind.company) ||
-          (_filter == 'individuals' && client.kind == _ClientKind.individual);
+          (_filter == 'companies' && client.type == ClientType.company) ||
+          (_filter == 'individuals' && client.type == ClientType.individual);
       final searchable = [
         client.name,
         client.taxId,
@@ -199,7 +175,7 @@ class _ClientsPageState extends State<ClientsPage> {
                                   leading: CircleAvatar(
                                     backgroundColor: const Color(0xFFE8F2F0),
                                     child: Icon(
-                                      filtered[index].kind == _ClientKind.company
+                                      filtered[index].type == ClientType.company
                                           ? Icons.business_outlined
                                           : Icons.person_outline,
                                       color: const Color(0xFF176B67),
@@ -211,7 +187,7 @@ class _ClientsPageState extends State<ClientsPage> {
                                   ),
                                   subtitle: Text(
                                     [
-                                      tr(filtered[index].kind == _ClientKind.company
+                                      tr(filtered[index].type == ClientType.company
                                           ? 'companies'
                                           : 'individuals'),
                                       if (filtered[index].taxId.isNotEmpty)
@@ -247,8 +223,8 @@ class _ClientsPageState extends State<ClientsPage> {
     );
   }
 
-  Future<void> _openClientForm({_ClientRecord? client}) async {
-    final result = await showDialog<_ClientRecord>(
+  Future<void> _openClientForm({Client? client}) async {
+    final result = await showDialog<Client>(
       context: context,
       builder: (context) => _ClientFormDialog(
         locale: widget.locale,
@@ -259,17 +235,12 @@ class _ClientsPageState extends State<ClientsPage> {
     if (result == null || !mounted) return;
 
     setState(() {
-      if (client == null) {
-        _clients.add(result);
-        _nextId++;
-      } else {
-        final index = _clients.indexWhere((item) => item.id == client.id);
-        if (index != -1) _clients[index] = result;
-      }
+      _repository.save(result);
+      if (client == null) _nextId++;
     });
   }
 
-  Future<void> _confirmDelete(_ClientRecord client) async {
+  Future<void> _confirmDelete(Client client) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -292,11 +263,11 @@ class _ClientsPageState extends State<ClientsPage> {
       ),
     );
     if (confirmed == true && mounted) {
-      setState(() => _clients.removeWhere((item) => item.id == client.id));
+      setState(() => _repository.delete(client.id));
     }
   }
 
-  void _showClientDetails(_ClientRecord client) {
+  void _showClientDetails(Client client) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -315,7 +286,7 @@ class _ClientsPageState extends State<ClientsPage> {
                     ),
               ),
               const SizedBox(height: 6),
-              Text(tr(client.kind == _ClientKind.company ? 'companies' : 'individuals')),
+              Text(tr(client.type == ClientType.company ? 'companies' : 'individuals')),
               const Divider(height: 24),
               _DetailRow(label: tr('taxId'), value: client.taxId),
               _DetailRow(label: tr('vatNumber'), value: client.vatNumber),
@@ -378,7 +349,7 @@ class _ClientFormDialog extends StatefulWidget {
 
   final String locale;
   final String id;
-  final _ClientRecord? client;
+  final Client? client;
 
   @override
   State<_ClientFormDialog> createState() => _ClientFormDialogState();
@@ -394,7 +365,7 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
   late final TextEditingController _email;
   late final TextEditingController _address;
   late final TextEditingController _notes;
-  late _ClientKind _kind;
+  late ClientType _kind;
 
   String tr(String key) => AppCopy.t(widget.locale, key);
 
@@ -410,7 +381,7 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
     _email = TextEditingController(text: client?.email ?? '');
     _address = TextEditingController(text: client?.address ?? '');
     _notes = TextEditingController(text: client?.notes ?? '');
-    _kind = client?.kind ?? _ClientKind.company;
+    _kind = client?.type ?? ClientType.company;
   }
 
   @override
@@ -438,12 +409,12 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                DropdownButtonFormField<_ClientKind>(
+                DropdownButtonFormField<ClientType>(
                   initialValue: _kind,
                   decoration: InputDecoration(labelText: tr('clientType')),
                   items: [
-                    DropdownMenuItem(value: _ClientKind.company, child: Text(tr('companies'))),
-                    DropdownMenuItem(value: _ClientKind.individual, child: Text(tr('individuals'))),
+                    DropdownMenuItem(value: ClientType.company, child: Text(tr('companies'))),
+                    DropdownMenuItem(value: ClientType.individual, child: Text(tr('individuals'))),
                   ],
                   onChanged: (value) {
                     if (value != null) setState(() => _kind = value);
@@ -503,10 +474,10 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
     final previous = widget.client;
     Navigator.pop(
       context,
-      _ClientRecord(
+      Client(
         id: previous?.id ?? widget.id,
         name: _name.text.trim(),
-        kind: _kind,
+        type: _kind,
         taxId: _taxId.text.trim(),
         vatNumber: _vatNumber.text.trim(),
         contactName: _contactName.text.trim(),
