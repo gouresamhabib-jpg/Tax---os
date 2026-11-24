@@ -35,9 +35,11 @@ class _ClientsPageState extends State<ClientsPage> {
   Widget build(BuildContext context) {
     final query = _query.trim().toLowerCase();
     final filtered = _repository.getAll().where((client) {
-      final matchesFilter = _filter == 'all' ||
-          (_filter == 'companies' && client.type == ClientType.company) ||
-          (_filter == 'individuals' && client.type == ClientType.individual);
+      final matchesArchive = _filter == 'archived' ? client.isArchived : !client.isArchived;
+      final matchesFilter = matchesArchive &&
+          (_filter == 'all' ||
+              (_filter == 'companies' && client.type == ClientType.company) ||
+              (_filter == 'individuals' && client.type == ClientType.individual));
       final searchable = [
         client.name,
         client.taxId,
@@ -133,7 +135,7 @@ class _ClientsPageState extends State<ClientsPage> {
               Wrap(
                 spacing: 8,
                 children: [
-                  for (final filter in ['all', 'companies', 'individuals'])
+                  for (final filter in ['all', 'companies', 'individuals', 'archived'])
                     ChoiceChip(
                       key: ValueKey('client_filter_$filter'),
                       label: Text(tr(filter)),
@@ -146,7 +148,7 @@ class _ClientsPageState extends State<ClientsPage> {
               Row(
                 children: [
                   Text(
-                    '${filtered.length} ${tr('activeClients')}',
+                    '${filtered.length} ${tr(_filter == 'archived' ? 'archivedClients' : 'activeClients')}',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   const Spacer(),
@@ -204,13 +206,19 @@ class _ClientsPageState extends State<ClientsPage> {
                                     onSelected: (action) {
                                       if (action == 'edit') {
                                         _openClientForm(client: filtered[index]);
-                                      } else if (action == 'delete') {
-                                        _confirmDelete(filtered[index]);
+                                      } else if (action == 'archive') {
+                                        _confirmArchive(filtered[index]);
+                                      } else if (action == 'restore') {
+                                        setState(() => _repository.restore(filtered[index].id));
                                       }
                                     },
                                     itemBuilder: (context) => [
-                                      PopupMenuItem(value: 'edit', child: Text(tr('edit'))),
-                                      PopupMenuItem(value: 'delete', child: Text(tr('delete'))),
+                                      if (!filtered[index].isArchived)
+                                        PopupMenuItem(value: 'edit', child: Text(tr('edit'))),
+                                      PopupMenuItem(
+                                        value: filtered[index].isArchived ? 'restore' : 'archive',
+                                        child: Text(tr(filtered[index].isArchived ? 'restoreClient' : 'archiveClient')),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -243,15 +251,15 @@ class _ClientsPageState extends State<ClientsPage> {
     });
   }
 
-  Future<void> _confirmDelete(Client client) async {
+  Future<void> _confirmArchive(Client client) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(tr('deleteClient')),
+        title: Text(tr('archiveClient')),
         content: Text(
           widget.locale == 'ar'
-              ? 'هل تريد حذف العميل «${client.name}» من البيانات التجريبية؟'
-              : 'Delete "${client.name}" from the demo records?',
+              ? 'سيتم إخفاء «${client.name}» من قائمة العملاء النشطين مع الاحتفاظ ببياناته ومهامه السابقة.'
+              : '"${client.name}" will be hidden from active clients while its details and existing tasks are retained.',
         ),
         actions: [
           TextButton(
@@ -260,13 +268,13 @@ class _ClientsPageState extends State<ClientsPage> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text(tr('delete')),
+            child: Text(tr('archiveClient')),
           ),
         ],
       ),
     );
     if (confirmed == true && mounted) {
-      setState(() => _repository.delete(client.id));
+      setState(() => _repository.archive(client.id));
     }
   }
 
