@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_copy.dart';
+import '../features/clients/clients_page.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -101,7 +102,7 @@ class _AppShellState extends State<AppShell> {
               index: _selectedIndex,
               children: [
                 _DashboardPage(locale: widget.locale),
-                _ClientsPage(locale: widget.locale),
+                ClientsPage(locale: widget.locale),
                 _ObligationsPage(locale: widget.locale),
                 _CalendarPage(locale: widget.locale),
                 _DocumentsPage(locale: widget.locale),
@@ -456,88 +457,6 @@ class _DemoNotice extends StatelessWidget {
           ],
         ),
       );
-}
-
-class _ClientsPage extends StatefulWidget {
-  const _ClientsPage({required this.locale});
-
-  final String locale;
-
-  @override
-  State<_ClientsPage> createState() => _ClientsPageState();
-}
-
-class _ClientsPageState extends State<_ClientsPage> {
-  String _query = '';
-
-  String tr(String key) => AppCopy.t(widget.locale, key);
-
-  @override
-  Widget build(BuildContext context) {
-    final clients = [
-      ('clientAlNoor', 'companies', 'VAT • CIT'),
-      ('clientAlAmal', 'individuals', 'Payroll • WHT'),
-      ('clientDelta', 'companies', 'CIT • VAT'),
-      ('clientAhmed', 'individuals', 'Individual income tax'),
-    ];
-    final filteredClients = clients.where((client) {
-      final name = tr(client.$1).toLowerCase();
-      return name.contains(_query.trim().toLowerCase());
-    }).toList();
-
-    return _PageFrame(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _PageHeading(title: tr('clients'), subtitle: tr('clientsSubtitle')),
-          const SizedBox(height: 20),
-          TextField(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: tr('searchClients'),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xFFE6ECEB)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xFFE6ECEB)),
-              ),
-            ),
-            onChanged: (value) => setState(() => _query = value),
-          ),
-          const SizedBox(height: 12),
-          Text('${filteredClients.length} ${tr('activeClients')}'),
-          const SizedBox(height: 8),
-          Card(
-            child: Column(
-              children: [
-                if (filteredClients.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Text(tr('noClientsFound')),
-                  ),
-                for (var i = 0; i < filteredClients.length; i++) ...[
-                  if (i > 0) const Divider(height: 1),
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: const Color(0xFFE8F2F0),
-                      child: Text(tr(filteredClients[i].$1).substring(0, 1)),
-                    ),
-                    title: Text(tr(filteredClients[i].$1)),
-                    subtitle: Text('${tr(filteredClients[i].$2)} • ${filteredClients[i].$3}'),
-                    trailing: const Icon(Icons.chevron_left),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _ObligationsPage extends StatelessWidget {
