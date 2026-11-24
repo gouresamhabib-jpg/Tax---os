@@ -191,7 +191,9 @@ class _SignInPageState extends State<SignInPage> {
                           }
                           return null;
                         },
-                        onFieldSubmitted: (_) => _isBusy ? null : _signIn(),
+                        onFieldSubmitted: (_) {
+                          if (!_isBusy) _signIn();
+                        },
                       ),
                       if (_errorMessage != null) ...[
                         const SizedBox(height: 12),
