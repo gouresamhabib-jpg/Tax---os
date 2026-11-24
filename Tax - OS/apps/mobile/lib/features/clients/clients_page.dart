@@ -168,7 +168,7 @@ class _ClientsPageState extends State<ClientsPage> {
               Row(
                 children: [
                   Text(
-                    '\${filtered.length} \${tr('activeClients')}',
+                    '${filtered.length} ${tr('activeClients')}',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   const Spacer(),
@@ -194,7 +194,7 @@ class _ClientsPageState extends State<ClientsPage> {
                               children: [
                                 if (index > 0) const Divider(height: 1),
                                 ListTile(
-                                  key: ValueKey('client_\${filtered[index].id}'),
+                                  key: ValueKey('client_${filtered[index].id}'),
                                   onTap: () => _showClientDetails(filtered[index]),
                                   leading: CircleAvatar(
                                     backgroundColor: const Color(0xFFE8F2F0),
@@ -215,7 +215,7 @@ class _ClientsPageState extends State<ClientsPage> {
                                           ? 'companies'
                                           : 'individuals'),
                                       if (filtered[index].taxId.isNotEmpty)
-                                        '\${tr('taxId')}: \${filtered[index].taxId}',
+                                        '${tr('taxId')}: ${filtered[index].taxId}',
                                       if (filtered[index].phone.isNotEmpty)
                                         filtered[index].phone,
                                     ].join(' • '),
@@ -276,8 +276,8 @@ class _ClientsPageState extends State<ClientsPage> {
         title: Text(tr('deleteClient')),
         content: Text(
           widget.locale == 'ar'
-              ? 'هل تريد حذف العميل «\${client.name}» من البيانات التجريبية؟'
-              : 'Delete "\${client.name}" from the demo records?',
+              ? 'هل تريد حذف العميل «${client.name}» من البيانات التجريبية؟'
+              : 'Delete "${client.name}" from the demo records?',
         ),
         actions: [
           TextButton(
