@@ -80,7 +80,7 @@ CREATE TABLE taxos_prototype.firm_membership_events (
   invitation_id uuid,
   event_type text NOT NULL CHECK (
     event_type IN (
-      'invitation_created', 'invitation_accepted', 'invitation_revoked',
+      'invitation_created', 'invitation_accepted', 'invitation_revoked', 'invitation_expired',
       'member_role_changed', 'member_suspended', 'member_reactivated',
       'member_revoked'
     )
@@ -135,6 +135,13 @@ BEGIN
     RAISE EXCEPTION 'Authentication required';
   END IF;
 
+  IF NOT EXISTS (
+    SELECT 1 FROM taxos_prototype.firms
+    WHERE id = p_firm_id AND status = 'active'
+  ) THEN
+    RAISE EXCEPTION 'Firm is not active';
+  END IF;
+
   IF NOT taxos_prototype.has_firm_role(p_firm_id, ARRAY['owner', 'admin']) THEN
     RAISE EXCEPTION 'Only firm owners and admins may invite members';
   END IF;
@@ -160,12 +167,21 @@ BEGIN
     RAISE EXCEPTION 'This email already has a membership in the firm';
   END IF;
 
-  UPDATE taxos_prototype.firm_invitations
-  SET status = 'expired'
-  WHERE firm_id = p_firm_id
-    AND invited_email = v_email
-    AND status = 'pending'
-    AND expires_at <= now();
+  WITH expired AS (
+    UPDATE taxos_prototype.firm_invitations
+    SET status = 'expired'
+    WHERE firm_id = p_firm_id
+      AND invited_email = v_email
+      AND status = 'pending'
+      AND expires_at <= now()
+    RETURNING id, invited_email
+  )
+  INSERT INTO taxos_prototype.firm_membership_events (
+    firm_id, actor_user_id, invitation_id, event_type, details
+  )
+  SELECT p_firm_id, auth.uid(), id, 'invitation_expired',
+    jsonb_build_object('email', invited_email, 'reason', 'expired_before_reinvite')
+  FROM expired;
 
   SELECT id INTO v_actor_membership_id
   FROM taxos_prototype.firm_memberships
@@ -233,7 +249,22 @@ BEGIN
     UPDATE taxos_prototype.firm_invitations
     SET status = 'expired'
     WHERE id = p_invitation_id;
+
+    INSERT INTO taxos_prototype.firm_membership_events (
+      firm_id, actor_user_id, invitation_id, event_type, details
+    )
+    VALUES (
+      v_invitation.firm_id, auth.uid(), p_invitation_id,
+      'invitation_expired', jsonb_build_object('email', v_invitation.invited_email)
+    );
     RETURN NULL;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM taxos_prototype.firms
+    WHERE id = v_invitation.firm_id AND status = 'active'
+  ) THEN
+    RAISE EXCEPTION 'Firm is not active';
   END IF;
 
   IF v_invitation.invited_email <> v_email THEN
