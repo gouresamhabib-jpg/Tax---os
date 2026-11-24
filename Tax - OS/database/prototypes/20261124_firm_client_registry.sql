@@ -7,48 +7,6 @@
 
 CREATE SCHEMA IF NOT EXISTS taxos_prototype;
 
--- ---------------------------------------------------------------------------
--- Tenant membership helpers
--- SECURITY DEFINER functions are owned by the schema/database owner.
--- The caller identity always comes from auth.uid(), never a client parameter.
--- ---------------------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION taxos_prototype.is_active_firm_member(p_firm_id uuid)
-RETURNS boolean
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = pg_catalog, taxos_prototype, auth
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM taxos_prototype.firm_memberships AS membership
-    WHERE membership.firm_id = p_firm_id
-      AND membership.user_id = auth.uid()
-      AND membership.status = 'active'
-  );
-$$;
-
-CREATE OR REPLACE FUNCTION taxos_prototype.has_firm_role(
-  p_firm_id uuid,
-  p_allowed_roles text[]
-)
-RETURNS boolean
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = pg_catalog, taxos_prototype, auth
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM taxos_prototype.firm_memberships AS membership
-    WHERE membership.firm_id = p_firm_id
-      AND membership.user_id = auth.uid()
-      AND membership.status = 'active'
-      AND membership.role = ANY (p_allowed_roles)
-  );
-$$;
-
 CREATE OR REPLACE FUNCTION taxos_prototype.set_updated_at()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -95,6 +53,48 @@ CREATE TABLE taxos_prototype.firm_memberships (
 
 CREATE INDEX firm_memberships_user_status_idx
   ON taxos_prototype.firm_memberships (user_id, status, firm_id);
+
+-- ---------------------------------------------------------------------------
+-- Tenant membership helpers
+-- SECURITY DEFINER functions are owned by the schema/database owner.
+-- The caller identity always comes from auth.uid(), never a client parameter.
+-- ---------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION taxos_prototype.is_active_firm_member(p_firm_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, taxos_prototype, auth
+AS $
+  SELECT EXISTS (
+    SELECT 1
+    FROM taxos_prototype.firm_memberships AS membership
+    WHERE membership.firm_id = p_firm_id
+      AND membership.user_id = auth.uid()
+      AND membership.status = 'active'
+  );
+$;
+
+CREATE OR REPLACE FUNCTION taxos_prototype.has_firm_role(
+  p_firm_id uuid,
+  p_allowed_roles text[]
+)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, taxos_prototype, auth
+AS $
+  SELECT EXISTS (
+    SELECT 1
+    FROM taxos_prototype.firm_memberships AS membership
+    WHERE membership.firm_id = p_firm_id
+      AND membership.user_id = auth.uid()
+      AND membership.status = 'active'
+      AND membership.role = ANY (p_allowed_roles)
+  );
+$;
 
 -- Firm creation and initial owner membership happen atomically.
 CREATE OR REPLACE FUNCTION taxos_prototype.add_initial_firm_owner()
