@@ -48,7 +48,7 @@ jobs:
         with:
           branch: ${{ github.head_ref }}
           commit_message: "style(flutter): apply dart formatter"
-          file_pattern: "Tax - OS/apps/mobile/lib Tax - OS/apps/mobile/test"
+          file_pattern: "."
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed lib test
