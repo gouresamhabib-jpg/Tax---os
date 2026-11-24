@@ -35,8 +35,6 @@ void main() {
       TextDirection.ltr,
     );
   });
-}
-
   testWidgets('creates a client in the local demo registry', (tester) async {
     await tester.pumpWidget(const TaxOSApp());
 
