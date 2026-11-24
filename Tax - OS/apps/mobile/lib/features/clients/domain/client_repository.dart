@@ -5,5 +5,7 @@ abstract interface class ClientRepository {
 
   void save(Client client);
 
-  void delete(String clientId);
+  void archive(String clientId);
+
+  void restore(String clientId);
 }
