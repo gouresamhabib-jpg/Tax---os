@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:taxos/app/auth_gate.dart';
 import 'package:taxos/core/supabase/supabase_bootstrap.dart';
 
