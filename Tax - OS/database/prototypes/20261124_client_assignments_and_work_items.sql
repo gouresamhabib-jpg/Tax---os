@@ -370,6 +370,11 @@ BEGIN
   IF TG_OP = 'INSERT' THEN
     NEW.created_at := now();
     NEW.updated_at := now();
+    IF NEW.status = 'completed' THEN
+      NEW.completed_at := now();
+    ELSE
+      NEW.completed_at := NULL;
+    END IF;
     IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assignee_membership_id)
        OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.created_by_membership_id)
        OR NOT EXISTS (
@@ -451,6 +456,17 @@ BEGIN
   IF assignment_changed AND NOT taxos_prototype.is_firm_manager(NEW.firm_id) THEN
     RAISE EXCEPTION 'Only owner, admin, or manager may change task assignments'
       USING ERRCODE = '42501';
+  END IF;
+
+  -- Completion time is database-controlled and follows the task status.
+  IF NEW.status = 'completed' THEN
+    IF OLD.status IS DISTINCT FROM 'completed' THEN
+      NEW.completed_at := now();
+    ELSE
+      NEW.completed_at := OLD.completed_at;
+    END IF;
+  ELSE
+    NEW.completed_at := NULL;
   END IF;
 
   IF NOT taxos_prototype.is_firm_manager(NEW.firm_id)
