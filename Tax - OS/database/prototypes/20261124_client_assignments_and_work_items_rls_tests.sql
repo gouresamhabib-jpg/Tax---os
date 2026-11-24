@@ -110,7 +110,7 @@ BEGIN
       current_setting('taxos_test.member_a_id')::uuid
     );
     RAISE EXCEPTION 'Cross-firm membership assignment was allowed';
-  EXCEPTION WHEN foreign_key_violation THEN NULL;
+  EXCEPTION WHEN foreign_key_violation OR check_violation THEN NULL;
   END;
 END;
 $$;
