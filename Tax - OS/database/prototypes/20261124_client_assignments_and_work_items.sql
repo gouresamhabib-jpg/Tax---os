@@ -147,6 +147,10 @@ BEGIN
   END IF;
 
   IF TG_OP = 'INSERT' THEN
+    IF NEW.ended_at IS NOT NULL OR NEW.ended_by_membership_id IS NOT NULL THEN
+      RAISE EXCEPTION 'A new assignment cannot start in an ended state'
+        USING ERRCODE = '23514';
+    END IF;
     IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.member_id)
        OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assigned_by_membership_id)
        OR NOT EXISTS (
@@ -200,6 +204,12 @@ BEGIN
       RAISE EXCEPTION 'A closed assignment cannot be changed'
         USING ERRCODE = '23514';
     END IF;
+    IF NEW.ended_at IS NOT NULL THEN
+      NEW.ended_at := now();
+    END IF;
+  ELSE
+    NEW.assigned_at := now();
+    NEW.created_at := now();
   END IF;
 
   RETURN NEW;
@@ -358,6 +368,8 @@ BEGIN
   END IF;
 
   IF TG_OP = 'INSERT' THEN
+    NEW.created_at := now();
+    NEW.updated_at := now();
     IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assignee_membership_id)
        OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.created_by_membership_id)
        OR NOT EXISTS (
