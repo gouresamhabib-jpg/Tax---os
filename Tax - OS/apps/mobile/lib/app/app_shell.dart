@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 
 import 'app_copy.dart';
 import '../features/clients/clients_page.dart';
+import '../features/clients/data/client_repository.dart';
+import '../features/work_items/data/work_item_repository.dart';
 import '../features/work_items/work_items_page.dart';
 
 class AppShell extends StatefulWidget {
@@ -20,6 +22,15 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
+  late final InMemoryClientRepository _clientRepository;
+  late final InMemoryWorkItemRepository _workItemRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _clientRepository = InMemoryClientRepository();
+    _workItemRepository = InMemoryWorkItemRepository();
+  }
 
   String tr(String key) => AppCopy.t(widget.locale, key);
 
@@ -104,8 +115,12 @@ class _AppShellState extends State<AppShell> {
               index: _selectedIndex,
               children: [
                 _DashboardPage(locale: widget.locale),
-                ClientsPage(locale: widget.locale),
-                WorkItemsPage(locale: widget.locale),
+                ClientsPage(locale: widget.locale, repository: _clientRepository),
+                WorkItemsPage(
+                  locale: widget.locale,
+                  repository: _workItemRepository,
+                  clientRepository: _clientRepository,
+                ),
                 _ObligationsPage(locale: widget.locale),
                 _CalendarPage(locale: widget.locale),
                 _DocumentsPage(locale: widget.locale),
