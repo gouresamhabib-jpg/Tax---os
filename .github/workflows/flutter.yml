@@ -42,7 +42,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style(flutter): apply dart formatter"
-          file_pattern: "Tax - OS/apps/mobile/lib/**/*.dart Tax - OS/apps/mobile/test/**/*.dart"
+          file_pattern: "Tax - OS/apps/mobile/lib Tax - OS/apps/mobile/test"
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed lib test
