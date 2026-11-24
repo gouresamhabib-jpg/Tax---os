@@ -193,7 +193,7 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
       builder: (context) => _WorkItemFormDialog(
         locale: widget.locale,
         id: 'task-local-$_nextId',
-        clients: _clientRepository.getAll(),
+        clients: _clientRepository.getAll().where((client) => !client.isArchived).toList(),
       ),
     );
     if (result == null || !mounted) return;
