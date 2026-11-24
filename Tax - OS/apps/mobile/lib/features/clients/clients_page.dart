@@ -38,6 +38,7 @@ class _ClientsPageState extends State<ClientsPage> {
       final matchesArchive = _filter == 'archived' ? client.isArchived : !client.isArchived;
       final matchesFilter = matchesArchive &&
           (_filter == 'all' ||
+              _filter == 'archived' ||
               (_filter == 'companies' && client.type == ClientType.company) ||
               (_filter == 'individuals' && client.type == ClientType.individual));
       final searchable = [
