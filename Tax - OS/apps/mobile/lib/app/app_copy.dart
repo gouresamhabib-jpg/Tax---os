@@ -88,7 +88,8 @@ class AppCopy {
       'officeSubtitle': 'إعدادات مساحة العمل',
       'teamManagement': 'فريق المكتب',
       'teamSubtitle': 'إدارة أعضاء المكتب والأدوار والدعوات',
-      'teamDemoNotice': 'هذه شاشة تجريبية. الدعوات لا تُرسل عبر البريد الإلكتروني والتغييرات لا تُحفظ على الخادم.',
+      'teamDemoNotice':
+          'هذه شاشة تجريبية. الدعوات لا تُرسل عبر البريد الإلكتروني والتغييرات لا تُحفظ على الخادم.',
       'activeMembers': 'أعضاء نشطون',
       'pendingInvitations': 'دعوات معلقة',
       'officeMembers': 'أعضاء المكتب',
@@ -115,7 +116,8 @@ class AppCopy {
       'memberRole': 'دور العضو',
       'validEmailRequired': 'أدخل بريدًا إلكترونيًا صحيحًا',
       'prepareInvitation': 'تجهيز الدعوة',
-      'invitePreparedDemo': 'تم تجهيز الدعوة تجريبيًا فقط؛ لم يتم إرسال بريد إلكتروني.',
+      'invitePreparedDemo':
+          'تم تجهيز الدعوة تجريبيًا فقط؛ لم يتم إرسال بريد إلكتروني.',
       'expiresInSevenDays': 'تنتهي خلال 7 أيام',
       'pending': 'معلقة',
       'language': 'لغة التطبيق',
@@ -223,7 +225,8 @@ class AppCopy {
       'officeSubtitle': 'Workspace preferences',
       'teamManagement': 'Office team',
       'teamSubtitle': 'Manage office members, roles, and invitations',
-      'teamDemoNotice': 'Demo screen only. Invitations are not sent by email and changes are not saved to a server.',
+      'teamDemoNotice':
+          'Demo screen only. Invitations are not sent by email and changes are not saved to a server.',
       'activeMembers': 'Active members',
       'pendingInvitations': 'Pending invitations',
       'officeMembers': 'Office members',
@@ -250,7 +253,8 @@ class AppCopy {
       'memberRole': 'Member role',
       'validEmailRequired': 'Enter a valid email address',
       'prepareInvitation': 'Prepare invitation',
-      'invitePreparedDemo': 'Invitation prepared in demo mode; no email was sent.',
+      'invitePreparedDemo':
+          'Invitation prepared in demo mode; no email was sent.',
       'expiresInSevenDays': 'Expires in 7 days',
       'pending': 'Pending',
       'language': 'App language',

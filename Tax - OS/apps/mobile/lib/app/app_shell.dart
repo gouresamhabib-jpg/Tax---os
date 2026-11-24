@@ -633,7 +633,9 @@ class _OfficePage extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.business_outlined)),
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.business_outlined),
+                  ),
                   title: Text(tr('officeName')),
                   subtitle: Text(tr('workspaceMode')),
                   trailing: const Icon(Icons.more_horiz),
@@ -641,7 +643,9 @@ class _OfficePage extends StatelessWidget {
                 const Divider(height: 1),
                 ListTile(
                   key: const ValueKey('open_team_management'),
-                  leading: const CircleAvatar(child: Icon(Icons.groups_outlined)),
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.groups_outlined),
+                  ),
                   title: Text(tr('teamManagement')),
                   subtitle: Text(tr('teamSubtitle')),
                   trailing: const Icon(Icons.chevron_right),
