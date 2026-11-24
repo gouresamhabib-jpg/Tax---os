@@ -18,11 +18,11 @@
 BEGIN;
 
 INSERT INTO taxos_prototype.firms (name, created_by)
-VALUES ('Local Test Firm A', :'user_a'::uuid)
+VALUES ('Local Test Firm A', current_setting('taxos_test.user_a')::uuid)
 RETURNING id AS firm_a_id \gset
 
 INSERT INTO taxos_prototype.firms (name, created_by)
-VALUES ('Local Test Firm B', :'user_b'::uuid)
+VALUES ('Local Test Firm B', current_setting('taxos_test.user_b')::uuid)
 RETURNING id AS firm_b_id \gset
 
 -- Creating each firm must provision exactly one active owner membership.
@@ -30,16 +30,16 @@ DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM taxos_prototype.firm_memberships
-    WHERE firm_id = :'firm_a_id'::uuid
-      AND user_id = :'user_a'::uuid
+    WHERE firm_id = current_setting('taxos_test.firm_a_id')::uuid
+      AND user_id = current_setting('taxos_test.user_a')::uuid
       AND role = 'owner' AND status = 'active'
   ) THEN
     RAISE EXCEPTION 'Firm A creator was not provisioned as active owner';
   END IF;
   IF NOT EXISTS (
     SELECT 1 FROM taxos_prototype.firm_memberships
-    WHERE firm_id = :'firm_b_id'::uuid
-      AND user_id = :'user_b'::uuid
+    WHERE firm_id = current_setting('taxos_test.firm_b_id')::uuid
+      AND user_id = current_setting('taxos_test.user_b')::uuid
       AND role = 'owner' AND status = 'active'
   ) THEN
     RAISE EXCEPTION 'Firm B creator was not provisioned as active owner';
@@ -48,15 +48,15 @@ END;
 $$;
 
 INSERT INTO taxos_prototype.firm_memberships (firm_id, user_id, role, status)
-VALUES (:'firm_b_id'::uuid, :'user_a'::uuid, 'accountant', 'suspended');
+VALUES (current_setting('taxos_test.firm_b_id')::uuid, current_setting('taxos_test.user_a')::uuid, 'accountant', 'suspended');
 
 INSERT INTO taxos_prototype.clients (firm_id, client_type, display_name)
 VALUES
-  (:'firm_a_id'::uuid, 'company', 'Firm A Client')
+  (current_setting('taxos_test.firm_a_id')::uuid, 'company', 'Firm A Client')
 RETURNING id AS client_a_id \gset
 
 INSERT INTO taxos_prototype.clients (firm_id, client_type, display_name, created_by)
-VALUES (:'firm_b_id'::uuid, 'company', 'Firm B Client', :'user_b'::uuid)
+VALUES (current_setting('taxos_test.firm_b_id')::uuid, 'company', 'Firm B Client', current_setting('taxos_test.user_b')::uuid)
 RETURNING id AS client_b_id \gset
 
 SET LOCAL ROLE authenticated;
@@ -74,7 +74,7 @@ DECLARE
 BEGIN
   SELECT count(*) INTO visible_count
   FROM taxos_prototype.clients
-  WHERE firm_id = :'firm_a_id'::uuid;
+  WHERE firm_id = current_setting('taxos_test.firm_a_id')::uuid;
   IF visible_count <> 1 THEN
     RAISE EXCEPTION 'Expected one Firm A client, got %', visible_count;
   END IF;
@@ -88,7 +88,7 @@ DECLARE
 BEGIN
   SELECT count(*) INTO visible_count
   FROM taxos_prototype.clients
-  WHERE firm_id = :'firm_b_id'::uuid;
+  WHERE firm_id = current_setting('taxos_test.firm_b_id')::uuid;
   IF visible_count <> 0 THEN
     RAISE EXCEPTION 'Cross-firm isolation failed; Firm B rows visible: %', visible_count;
   END IF;
@@ -100,7 +100,7 @@ DO $$
 BEGIN
   BEGIN
     INSERT INTO taxos_prototype.clients (firm_id, client_type, display_name)
-    VALUES (:'firm_b_id'::uuid, 'company', 'Unauthorized client');
+    VALUES (current_setting('taxos_test.firm_b_id')::uuid, 'company', 'Unauthorized client');
     RAISE EXCEPTION 'RLS allowed a cross-firm client insert';
   EXCEPTION
     WHEN insufficient_privilege THEN NULL;
@@ -113,7 +113,7 @@ INSERT INTO taxos_prototype.client_identifiers (
   firm_id, client_id, identifier_type, identifier_value, normalized_value
 )
 VALUES (
-  :'firm_a_id'::uuid, :'client_a_id'::uuid,
+  current_setting('taxos_test.firm_a_id')::uuid, current_setting('taxos_test.client_a_id')::uuid,
   'tax_registration', '123456789', '123456789'
 );
 
@@ -126,7 +126,7 @@ BEGIN
       firm_id, client_id, identifier_type, identifier_value, normalized_value
     )
     VALUES (
-      :'firm_a_id'::uuid, :'client_b_id'::uuid,
+      current_setting('taxos_test.firm_a_id')::uuid, current_setting('taxos_test.client_b_id')::uuid,
       'tax_registration', '987654321', '987654321'
     );
     RAISE EXCEPTION 'Composite tenant foreign key allowed a cross-firm parent';
