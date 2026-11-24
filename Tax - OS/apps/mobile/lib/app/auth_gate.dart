@@ -1,0 +1,47 @@
+import 'package:material_ui/material_ui.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../core/supabase/supabase_bootstrap.dart';
+import 'app_shell.dart';
+import 'sign_in_page.dart';
+
+class AuthGate extends StatefulWidget {
+  const AuthGate({super.key});
+
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  String _locale = 'ar';
+
+  void _toggleLocale() {
+    setState(() => _locale = _locale == 'ar' ? 'en' : 'ar');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!SupabaseBootstrap.isInitialized) {
+      return AppShell(locale: _locale, onToggleLocale: _toggleLocale);
+    }
+
+    final client = Supabase.instance.client;
+    return StreamBuilder<AuthState>(
+      stream: client.auth.onAuthStateChange,
+      builder: (context, snapshot) {
+        final session = snapshot.data?.session ?? client.auth.currentSession;
+        if (session == null) {
+          return SignInPage(
+            locale: _locale,
+            onToggleLocale: _toggleLocale,
+          );
+        }
+        return AppShell(
+          locale: _locale,
+          onToggleLocale: _toggleLocale,
+          onSignOut: () async => client.auth.signOut(),
+        );
+      },
+    );
+  }
+}
