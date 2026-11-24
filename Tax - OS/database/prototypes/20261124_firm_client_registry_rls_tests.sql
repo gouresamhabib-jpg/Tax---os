@@ -55,9 +55,9 @@ $$;
 INSERT INTO taxos_prototype.firm_memberships (firm_id, user_id, role, status)
 VALUES (current_setting('taxos_test.firm_b_id')::uuid, current_setting('taxos_test.user_a')::uuid, 'accountant', 'suspended');
 
-INSERT INTO taxos_prototype.clients (firm_id, client_type, display_name)
+INSERT INTO taxos_prototype.clients (firm_id, client_type, display_name, created_by)
 VALUES
-  (current_setting('taxos_test.firm_a_id')::uuid, 'company', 'Firm A Client')
+  (current_setting('taxos_test.firm_a_id')::uuid, 'company', 'Firm A Client', current_setting('taxos_test.user_a')::uuid)
 RETURNING id AS client_a_id \gset
 
 INSERT INTO taxos_prototype.clients (firm_id, client_type, display_name, created_by)
