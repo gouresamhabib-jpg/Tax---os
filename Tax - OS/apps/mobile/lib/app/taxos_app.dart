@@ -18,8 +18,6 @@ class _TaxOSAppState extends State<TaxOSApp> {
 
   @override
   Widget build(BuildContext context) {
-    final isArabic = _locale == 'ar';
-
     return MaterialApp(
       title: 'TaxOS',
       debugShowCheckedModeBanner: false,
@@ -44,10 +42,7 @@ class _TaxOSAppState extends State<TaxOSApp> {
           ),
         ),
       ),
-      home: Directionality(
-        textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: const AuthGate(),
-      ),
+      home: const AuthGate(),
     );
   }
 }
