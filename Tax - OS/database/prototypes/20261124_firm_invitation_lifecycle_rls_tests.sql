@@ -206,7 +206,7 @@ SELECT taxos_prototype.change_firm_member_role(
 SELECT taxos_prototype.create_firm_invitation(
   current_setting('taxos_test.firm_a_id')::uuid,
   'admin-pending@example.com', 'admin'
-) AS admin_invitation_id \\gset
+) AS admin_invitation_id \gset
 SELECT set_config('taxos_test.admin_invitation_id', :'admin_invitation_id', true);
 
 RESET ROLE;
@@ -230,7 +230,7 @@ END;
 $$;
 
 -- Admin cannot revoke an invitation that grants the admin role.
-DO $
+DO $$
 DECLARE
   rejected boolean := false;
 BEGIN
@@ -242,7 +242,7 @@ BEGIN
   END;
   IF NOT rejected THEN RAISE EXCEPTION 'Admin was allowed to revoke an admin invitation'; END IF;
 END;
-$;
+$$;
 
 -- Admin can manage ordinary member roles, but cannot manage their own role.
 SELECT taxos_prototype.change_firm_member_role(
