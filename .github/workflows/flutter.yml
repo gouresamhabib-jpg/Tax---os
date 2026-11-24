@@ -37,10 +37,16 @@ jobs:
       - name: Format Dart sources
         run: dart format lib test
 
+      - name: Inspect formatter changes
+        run: |
+          git status --short
+          git diff --stat
+
       - name: Commit formatting changes to this repository's PR branch
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          branch: ${{ github.head_ref }}
           commit_message: "style(flutter): apply dart formatter"
           file_pattern: "Tax - OS/apps/mobile/lib Tax - OS/apps/mobile/test"
 
