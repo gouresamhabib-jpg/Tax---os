@@ -176,32 +176,32 @@ BEGIN
     RAISE EXCEPTION 'Expected one task assignment history event';
   END IF;
 END;
-$;
+$$;
 
 -- Completion timestamps are database-controlled and track status transitions.
 UPDATE taxos_prototype.work_items
 SET status = 'completed', updated_by_membership_id = :'member_a_id'::uuid
 WHERE id = current_setting('taxos_test.work_item_id')::uuid;
-DO $
+DO $$
 BEGIN
   IF (SELECT completed_at FROM taxos_prototype.work_items
       WHERE id = current_setting('taxos_test.work_item_id')::uuid) IS NULL THEN
     RAISE EXCEPTION 'Completed task must receive a completion timestamp';
   END IF;
 END;
-$;
+$$;
 
 UPDATE taxos_prototype.work_items
 SET status = 'in_progress', updated_by_membership_id = :'member_a_id'::uuid
 WHERE id = current_setting('taxos_test.work_item_id')::uuid;
-DO $
+DO $$
 BEGIN
   IF (SELECT completed_at FROM taxos_prototype.work_items
       WHERE id = current_setting('taxos_test.work_item_id')::uuid) IS NOT NULL THEN
     RAISE EXCEPTION 'Reopened task must clear its completion timestamp';
   END IF;
 END;
-$;
+$$;
 
 RESET ROLE;
 SET LOCAL ROLE authenticated;
