@@ -187,7 +187,10 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return tr('أدخل كلمة المرور.', 'Enter your password.');
+                            return tr(
+                              'أدخل كلمة المرور.',
+                              'Enter your password.',
+                            );
                           }
                           return null;
                         },

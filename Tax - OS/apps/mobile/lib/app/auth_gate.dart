@@ -37,10 +37,7 @@ class _AuthGateState extends State<AuthGate> {
       builder: (context, snapshot) {
         final session = snapshot.data?.session ?? client.auth.currentSession;
         if (session == null) {
-          return SignInPage(
-            locale: _locale,
-            onToggleLocale: _toggleLocale,
-          );
+          return SignInPage(locale: _locale, onToggleLocale: _toggleLocale);
         }
         return _OfficeSetupPendingPage(
           locale: _locale,
@@ -84,10 +81,7 @@ class _OfficeSetupPendingPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('TaxOS'),
         actions: [
-          TextButton(
-            onPressed: onSignOut,
-            child: Text(text.$4),
-          ),
+          TextButton(onPressed: onSignOut, child: Text(text.$4)),
           const SizedBox(width: 12),
         ],
       ),
