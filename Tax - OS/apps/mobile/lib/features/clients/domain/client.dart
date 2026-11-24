@@ -12,6 +12,7 @@ class Client {
     this.email = '',
     this.address = '',
     this.notes = '',
+    this.responsibleEmployeeId = '',
   });
 
   final String id;
@@ -24,4 +25,5 @@ class Client {
   final String email;
   final String address;
   final String notes;
+  final String responsibleEmployeeId;
 }
