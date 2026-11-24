@@ -89,7 +89,7 @@ class _AppShellState extends State<AppShell> {
                   .map(
                     (item) => NavigationRailDestination(
                       icon: Icon(item.icon),
-                      selectedIcon: Icon(item.icon, fill: 1),
+                      selectedIcon: Icon(item.icon),
                       label: Text(tr(item.labelKey)),
                     ),
                   )
@@ -121,7 +121,7 @@ class _AppShellState extends State<AppShell> {
                     (item) => NavigationDestination(
                       key: ValueKey('nav_${item.labelKey}'),
                       icon: Icon(item.icon),
-                      selectedIcon: Icon(item.icon, fill: 1),
+                      selectedIcon: Icon(item.icon),
                       label: tr(item.labelKey),
                     ),
                   )
@@ -278,14 +278,10 @@ class _DashboardPage extends StatelessWidget {
                       ),
                 ),
               ),
-              TextButton(
-                onPressed: () {},
-                child: Text(tr('viewAll')),
-              ),
             ],
           ),
           const SizedBox(height: 10),
-          const _ObligationTable(),
+          _ObligationTable(locale: locale),
         ],
       ),
     );
@@ -355,14 +351,16 @@ class _MetricCard extends StatelessWidget {
 }
 
 class _ObligationTable extends StatelessWidget {
-  const _ObligationTable();
+  const _ObligationTable({required this.locale});
+
+  final String locale;
 
   @override
   Widget build(BuildContext context) {
     final rows = [
-      ('شركة النور للتجارة', 'vat', 'أكتوبر 2026', '2026/11/30', 'inProgress'),
-      ('مؤسسة الأمل', 'payroll', 'أكتوبر 2026', '2026/11/30', 'readyReview'),
-      ('دلتا للخدمات', 'incomeTax', '2025', '2026/12/31', 'filed'),
+      ('clientAlNoor', 'vat', 'oct2026', '2026/11/30', 'inProgress'),
+      ('clientAlAmal', 'payroll', 'oct2026', '2026/11/30', 'readyReview'),
+      ('clientDelta', 'incomeTax', 'taxYear2025', '2026/12/31', 'filed'),
     ];
 
     return Card(
@@ -380,20 +378,20 @@ class _ObligationTable extends StatelessWidget {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(row.$1, style: const TextStyle(fontWeight: FontWeight.w700)),
+                            Text(AppCopy.t(locale, row.$1), style: const TextStyle(fontWeight: FontWeight.w700)),
                             const SizedBox(height: 5),
-                            Text(AppCopy.t('ar', row.$2)),
-                            Text(row.$3),
+                            Text(AppCopy.t(locale, row.$2)),
+                            Text(AppCopy.t(locale, row.$3)),
                             Text(row.$4, style: const TextStyle(color: Colors.black54)),
                             const SizedBox(height: 6),
-                            _StatusPill(label: AppCopy.t('ar', row.$5)),
+                            _StatusPill(label: AppCopy.t(locale, row.$5)),
                           ],
                         )
                       : Row(
                           children: [
-                            Expanded(flex: 3, child: Text(row.$1, style: const TextStyle(fontWeight: FontWeight.w700))),
-                            Expanded(flex: 2, child: Text(AppCopy.t('ar', row.$2))),
-                            Expanded(flex: 2, child: Text(row.$3)),
+                            Expanded(flex: 3, child: Text(AppCopy.t(locale, row.$1), style: const TextStyle(fontWeight: FontWeight.w700))),
+                            Expanded(flex: 2, child: Text(AppCopy.t(locale, row.$2))),
+                            Expanded(flex: 2, child: Text(AppCopy.t(locale, row.$3))),
                             Expanded(flex: 2, child: Text(row.$4)),
                             _StatusPill(label: AppCopy.t('ar', row.$5)),
                           ],
@@ -460,21 +458,32 @@ class _DemoNotice extends StatelessWidget {
       );
 }
 
-class _ClientsPage extends StatelessWidget {
+class _ClientsPage extends StatefulWidget {
   const _ClientsPage({required this.locale});
 
   final String locale;
 
-  String tr(String key) => AppCopy.t(locale, key);
+  @override
+  State<_ClientsPage> createState() => _ClientsPageState();
+}
+
+class _ClientsPageState extends State<_ClientsPage> {
+  String _query = '';
+
+  String tr(String key) => AppCopy.t(widget.locale, key);
 
   @override
   Widget build(BuildContext context) {
     final clients = [
-      ('شركة النور للتجارة', 'companies', 'VAT • CIT'),
-      ('مؤسسة الأمل', 'individuals', 'Payroll • WHT'),
-      ('دلتا للخدمات', 'companies', 'CIT • VAT'),
-      ('أحمد محمود', 'individuals', 'Individual income tax'),
+      ('clientAlNoor', 'companies', 'VAT • CIT'),
+      ('clientAlAmal', 'individuals', 'Payroll • WHT'),
+      ('clientDelta', 'companies', 'CIT • VAT'),
+      ('clientAhmed', 'individuals', 'Individual income tax'),
     ];
+    final filteredClients = clients.where((client) {
+      final name = tr(client.$1).toLowerCase();
+      return name.contains(_query.trim().toLowerCase());
+    }).toList();
 
     return _PageFrame(
       child: Column(
@@ -497,22 +506,28 @@ class _ClientsPage extends StatelessWidget {
                 borderSide: const BorderSide(color: Color(0xFFE6ECEB)),
               ),
             ),
+            onChanged: (value) => setState(() => _query = value),
           ),
           const SizedBox(height: 12),
-          Text('4 ${tr('activeClients')}'),
+          Text('${filteredClients.length} ${tr('activeClients')}'),
           const SizedBox(height: 8),
           Card(
             child: Column(
               children: [
-                for (var i = 0; i < clients.length; i++) ...[
+                if (filteredClients.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(tr('noClientsFound')),
+                  ),
+                for (var i = 0; i < filteredClients.length; i++) ...[
                   if (i > 0) const Divider(height: 1),
                   ListTile(
                     leading: CircleAvatar(
                       backgroundColor: const Color(0xFFE8F2F0),
-                      child: Text(clients[i].$1.characters.first),
+                      child: Text(tr(filteredClients[i].$1).substring(0, 1)),
                     ),
-                    title: Text(clients[i].$1),
-                    subtitle: Text('${tr(clients[i].$2)} • ${clients[i].$3}'),
+                    title: Text(tr(filteredClients[i].$1)),
+                    subtitle: Text('${tr(filteredClients[i].$2)} • ${filteredClients[i].$3}'),
                     trailing: const Icon(Icons.chevron_left),
                   ),
                 ],
@@ -547,7 +562,7 @@ class _ObligationsPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            const _ObligationTable(),
+            _ObligationTable(locale: locale),
           ],
         ),
       );
