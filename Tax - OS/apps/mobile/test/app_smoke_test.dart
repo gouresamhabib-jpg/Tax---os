@@ -36,3 +36,19 @@ void main() {
     );
   });
 }
+
+  testWidgets('creates a client in the local demo registry', (tester) async {
+    await tester.pumpWidget(const TaxOSApp());
+
+    await tester.tap(find.byKey(const ValueKey('nav_clients')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('add_client')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).first, 'شركة الاختبار');
+    await tester.tap(find.byKey(const ValueKey('save_client')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('شركة الاختبار'), findsOneWidget);
+  });
+}
