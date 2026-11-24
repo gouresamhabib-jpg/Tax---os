@@ -21,10 +21,16 @@ class _AuthGateState extends State<AuthGate> {
 
   @override
   Widget build(BuildContext context) {
-    if (!SupabaseBootstrap.isInitialized) {
-      return AppShell(locale: _locale, onToggleLocale: _toggleLocale);
-    }
+    final child = !SupabaseBootstrap.isInitialized
+        ? AppShell(locale: _locale, onToggleLocale: _toggleLocale)
+        : _buildAuthenticatedContent();
+    return Directionality(
+      textDirection: _locale == 'ar' ? TextDirection.rtl : TextDirection.ltr,
+      child: child,
+    );
+  }
 
+  Widget _buildAuthenticatedContent() {
     final client = Supabase.instance.client;
     return StreamBuilder<AuthState>(
       stream: client.auth.onAuthStateChange,
