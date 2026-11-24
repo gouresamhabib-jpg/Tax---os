@@ -435,6 +435,19 @@ BEGIN
     OLD.assignee_membership_id IS DISTINCT FROM NEW.assignee_membership_id
     OR OLD.reviewer_membership_id IS DISTINCT FROM NEW.reviewer_membership_id;
 
+  IF NOT taxos_prototype.is_firm_manager(NEW.firm_id)
+     AND (
+       OLD.title IS DISTINCT FROM NEW.title
+       OR OLD.description IS DISTINCT FROM NEW.description
+       OR OLD.priority IS DISTINCT FROM NEW.priority
+       OR OLD.due_at IS DISTINCT FROM NEW.due_at
+       OR OLD.archived_at IS DISTINCT FROM NEW.archived_at
+       OR OLD.assignment_change_reason IS DISTINCT FROM NEW.assignment_change_reason
+     ) THEN
+    RAISE EXCEPTION 'Only owner, admin, or manager may change task details, due date, priority, archive state, or assignment reason'
+      USING ERRCODE = '42501';
+  END IF;
+
   IF assignment_changed AND NOT taxos_prototype.is_firm_manager(NEW.firm_id) THEN
     RAISE EXCEPTION 'Only owner, admin, or manager may change task assignments'
       USING ERRCODE = '42501';
