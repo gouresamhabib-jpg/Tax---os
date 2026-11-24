@@ -10,11 +10,13 @@ class AppShell extends StatefulWidget {
   const AppShell({
     required this.locale,
     required this.onToggleLocale,
+    this.onSignOut,
     super.key,
   });
 
   final String locale;
   final VoidCallback onToggleLocale;
+  final VoidCallback? onSignOut;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -77,7 +79,16 @@ class _AppShellState extends State<AppShell> {
           ],
         ),
         actions: [
-          _DemoBadge(label: tr('demo')),
+          if (widget.onSignOut == null) ...[
+            _DemoBadge(label: tr('demo')),
+            const SizedBox(width: 6),
+          ] else
+            IconButton(
+              key: const ValueKey('auth_sign_out'),
+              tooltip: tr('signOut'),
+              onPressed: widget.onSignOut,
+              icon: const Icon(Icons.logout),
+            ),
           const SizedBox(width: 6),
           IconButton(
             key: const ValueKey('toggle_locale'),
