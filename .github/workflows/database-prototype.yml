@@ -59,6 +59,11 @@ jobs:
           psql --set ON_ERROR_STOP=1 \
             --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items.sql"
 
+      - name: Apply firm invitation and membership lifecycle prototype
+        run: |
+          psql --set ON_ERROR_STOP=1 \
+            --file "Tax - OS/database/prototypes/20261124_firm_invitation_lifecycle.sql"
+
       - name: Test firm tenancy and client RLS
         run: |
           psql --set ON_ERROR_STOP=1 \
@@ -72,6 +77,14 @@ jobs:
             --set user_a=11111111-1111-4111-8111-111111111111 \
             --set user_b=22222222-2222-4222-8222-222222222222 \
             --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items_rls_tests.sql"
+
+      - name: Test firm invitations and membership permissions
+        run: |
+          psql --set ON_ERROR_STOP=1 \
+            --set user_a=11111111-1111-4111-8111-111111111111 \
+            --set user_b=22222222-2222-4222-8222-222222222222 \
+            --set user_c=33333333-3333-4333-8333-333333333333 \
+            --file "Tax - OS/database/prototypes/20261124_firm_invitation_lifecycle_rls_tests.sql"
 
       - name: Set up Supabase CLI
         uses: supabase/setup-cli@v1
@@ -110,10 +123,13 @@ jobs:
           }
           USER_A=$(create_user "taxos-user-a@example.com" "TaxOS-Test-Password-A-2026!")
           USER_B=$(create_user "taxos-user-b@example.com" "TaxOS-Test-Password-B-2026!")
+          USER_C=$(create_user "taxos-user-c@example.com" "TaxOS-Test-Password-C-2026!")
           test -n "$USER_A" && test "$USER_A" != "null"
           test -n "$USER_B" && test "$USER_B" != "null"
+          test -n "$USER_C" && test "$USER_C" != "null"
           echo "TAXOS_TEST_USER_A=$USER_A" >> "$GITHUB_ENV"
           echo "TAXOS_TEST_USER_B=$USER_B" >> "$GITHUB_ENV"
+          echo "TAXOS_TEST_USER_C=$USER_C" >> "$GITHUB_ENV"
 
       - name: Apply prototypes to actual local Supabase
         run: |
@@ -121,6 +137,8 @@ jobs:
             --file "Tax - OS/database/prototypes/20261124_firm_client_registry.sql"
           psql "$DB_URL" --set ON_ERROR_STOP=1 \
             --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items.sql"
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+            --file "Tax - OS/database/prototypes/20261124_firm_invitation_lifecycle.sql"
 
       - name: Run RLS tests against actual local Supabase Auth
         run: |
@@ -132,6 +150,11 @@ jobs:
             --set user_a="$TAXOS_TEST_USER_A" \
             --set user_b="$TAXOS_TEST_USER_B" \
             --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items_rls_tests.sql"
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \
+            --set user_a="$TAXOS_TEST_USER_A" \
+            --set user_b="$TAXOS_TEST_USER_B" \
+            --set user_c="$TAXOS_TEST_USER_C" \
+            --file "Tax - OS/database/prototypes/20261124_firm_invitation_lifecycle_rls_tests.sql"
 
       - name: Stop disposable local Supabase
         if: always()
