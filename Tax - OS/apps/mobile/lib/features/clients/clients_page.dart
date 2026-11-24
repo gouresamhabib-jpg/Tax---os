@@ -1,10 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/app_copy.dart';
+import '../../shared/demo_office_members.dart';
 import 'data/client_repository.dart';
 import 'domain/client.dart';
 import 'domain/client_repository.dart';
-import '../../shared/demo_office_members.dart';
 
 class ClientsPage extends StatefulWidget {
   const ClientsPage({required this.locale, this.repository, super.key});
