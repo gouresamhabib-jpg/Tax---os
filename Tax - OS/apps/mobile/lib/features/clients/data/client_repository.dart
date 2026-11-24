@@ -12,16 +12,19 @@ class InMemoryClientRepository implements ClientRepository {
       id: 'demo-1',
       name: 'شركة النور للتجارة',
       type: ClientType.company,
+      responsibleEmployeeId: 'member-1',
     ),
     Client(
       id: 'demo-2',
       name: 'مؤسسة الأمل',
       type: ClientType.company,
+      responsibleEmployeeId: 'member-2',
     ),
     Client(
       id: 'demo-3',
       name: 'دلتا للخدمات',
       type: ClientType.company,
+      responsibleEmployeeId: 'member-3',
     ),
     Client(
       id: 'demo-4',
