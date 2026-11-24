@@ -4,6 +4,7 @@ import '../../app/app_copy.dart';
 import 'data/client_repository.dart';
 import 'domain/client.dart';
 import 'domain/client_repository.dart';
+import '../../shared/demo_office_members.dart';
 
 class ClientsPage extends StatefulWidget {
   const ClientsPage({required this.locale, this.repository, super.key});
@@ -296,6 +297,12 @@ class _ClientsPageState extends State<ClientsPage> {
               _DetailRow(label: tr('email'), value: client.email),
               _DetailRow(label: tr('address'), value: client.address),
               _DetailRow(label: tr('notes'), value: client.notes),
+              _DetailRow(
+                label: tr('responsibleEmployee'),
+                value: client.responsibleEmployeeId.isEmpty
+                    ? tr('unassigned')
+                    : demoOfficeMemberName(client.responsibleEmployeeId, widget.locale),
+              ),
               const SizedBox(height: 14),
               Align(
                 alignment: AlignmentDirectional.centerEnd,
@@ -367,6 +374,7 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
   late final TextEditingController _address;
   late final TextEditingController _notes;
   late ClientType _kind;
+  late String _responsibleEmployeeId;
 
   String tr(String key) => AppCopy.t(widget.locale, key);
 
@@ -383,6 +391,7 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
     _address = TextEditingController(text: client?.address ?? '');
     _notes = TextEditingController(text: client?.notes ?? '');
     _kind = client?.type ?? ClientType.company;
+    _responsibleEmployeeId = client?.responsibleEmployeeId ?? '';
   }
 
   @override
@@ -419,6 +428,22 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
                   ],
                   onChanged: (value) {
                     if (value != null) setState(() => _kind = value);
+                  },
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  initialValue: _responsibleEmployeeId,
+                  decoration: InputDecoration(labelText: tr('responsibleEmployee')),
+                  items: [
+                    DropdownMenuItem(value: '', child: Text(tr('unassigned'))),
+                    for (final member in demoOfficeMembers)
+                      DropdownMenuItem(
+                        value: member.id,
+                        child: Text(member.nameFor(widget.locale)),
+                      ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) setState(() => _responsibleEmployeeId = value);
                   },
                 ),
                 const SizedBox(height: 12),
@@ -486,6 +511,7 @@ class _ClientFormDialogState extends State<_ClientFormDialog> {
         email: _email.text.trim(),
         address: _address.text.trim(),
         notes: _notes.text.trim(),
+        responsibleEmployeeId: _responsibleEmployeeId,
       ),
     );
   }
