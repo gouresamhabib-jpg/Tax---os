@@ -37,18 +37,18 @@ The accompanying SQL files live under `database/prototypes/`, not a migration di
 
 `auth.users` remains the authentication source. Professional profile details and employee invitations are intentionally outside this first slice.
 
-### 3.1 Responsibility and task model — next implementation slice
+### 3.1 Responsibility and task model — prototype added
 
-The current SQL prototype does not yet implement assignment or task tables. The following is the agreed product behavior and the proposed direction for the next design increment:
+The behavior is documented in DOC-20 and the additive local prototype extension `20261124_client_assignments_and_work_items.sql`:
 
-- **Client responsibility:** support one primary responsible employee per client for clear accountability. Store this as a firm-scoped membership reference (or a dedicated assignment record if assignment history is required). The responsible employee must be an active member of the same firm.
-- **Supporting employees:** allow additional team members to be associated with a client when needed, without replacing the primary responsible employee.
-- **Task ownership:** tasks are separate records linked to a client and firm. Each task has its own assignee; reviewable tasks may also have a separate reviewer. Both must be active members of the same firm.
-- **Assignment history:** preserve who assigned/reassigned work, when it happened, and the previous/new assignee for auditability.
-- **No access filtering by assignment:** client and task assignments are workflow/accountability metadata only in the MVP. All active firm members retain office-wide client visibility, subject to the firm's eventual role/action permissions.
-- **Tenant integrity:** assignment and task rows must enforce firm consistency with composite foreign keys, not rely on Flutter filtering.
+- **Client responsibility:** `client_assignments` supports one active primary assignment and multiple supporting assignments. Assignment periods are closed rather than deleted when responsibility changes.
+- **Task ownership:** `work_items` are separate from client responsibility. Each task has one assignee and an optional separate reviewer.
+- **History:** `client_assignment_events` and `work_item_assignment_events` are trigger-written history tables with no direct authenticated write grants.
+- **Permissions in the prototype:** owner/admin/manager can create or change assignments and create/reassign work. The assignee or reviewer can update task progress but cannot change assignment.
+- **No access filtering by assignment:** all active firm members can still read all clients, assignments, work items, and history in their firm.
+- **Tenant integrity:** assignments and tasks use composite firm-scoped foreign keys to both clients and memberships; triggers additionally check active membership status and actor identity.
 
-Do not treat this conceptual model as an implemented schema. Table names, lifecycle rules, reassignment permissions, and history retention still require a focused design review before SQL is added.
+The extension is a proposed local-only prototype, not a production schema or approved migration. See DOC-20 for lifecycle, rules, exclusions, and unresolved product decisions.
 
 ## 4. Authorization rules
 
@@ -105,7 +105,8 @@ The prototype test script requires two existing test users in the local Supabase
 - Exact owner/admin/member permission matrix and who can invite, suspend, or revoke staff.
 - Whether client identifiers need field-level encryption or an external secrets vault, based on the deployment threat model.
 - Retention and soft-delete policy for clients and official identifiers.
-- Detailed client assignment model (primary responsible employee, supporting employees, reassignment history) and task lifecycle/permissions.
+- Whether staff may create their own work items, whether office-level tasks without a client are needed, and which task categories require mandatory review.
+- Exact notification rules and whether reassignment reasons should be mandatory.
 - Production migration/backfill, rollback, and legacy storage compatibility details.
 
 ## 9. Explicit exclusions
