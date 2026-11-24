@@ -90,8 +90,8 @@ CREATE UNIQUE INDEX client_assignments_one_active_primary_idx
   ON taxos_prototype.client_assignments (firm_id, client_id)
   WHERE assignment_role = 'primary' AND ended_at IS NULL;
 
-CREATE UNIQUE INDEX client_assignments_one_active_role_per_member_idx
-  ON taxos_prototype.client_assignments (firm_id, client_id, member_id, assignment_role)
+CREATE UNIQUE INDEX client_assignments_one_active_assignment_per_member_idx
+  ON taxos_prototype.client_assignments (firm_id, client_id, member_id)
   WHERE ended_at IS NULL;
 
 CREATE INDEX client_assignments_member_active_idx
