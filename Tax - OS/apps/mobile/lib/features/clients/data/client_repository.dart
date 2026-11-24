@@ -1,12 +1,5 @@
 import '../domain/client.dart';
-
-abstract interface class ClientRepository {
-  List<Client> getAll();
-
-  void save(Client client);
-
-  void delete(String clientId);
-}
+import '../domain/client_repository.dart';
 
 class InMemoryClientRepository implements ClientRepository {
   InMemoryClientRepository({List<Client>? initialClients})
