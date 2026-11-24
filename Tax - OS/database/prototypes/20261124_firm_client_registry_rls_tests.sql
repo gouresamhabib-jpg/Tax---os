@@ -18,11 +18,11 @@
 BEGIN;
 
 INSERT INTO taxos_prototype.firms (name, created_by)
-VALUES ('Local Test Firm A', current_setting('taxos_test.user_a')::uuid)
+VALUES ('Local Test Firm A', :'user_a'::uuid)
 RETURNING id AS firm_a_id \gset
 
 INSERT INTO taxos_prototype.firms (name, created_by)
-VALUES ('Local Test Firm B', current_setting('taxos_test.user_b')::uuid)
+VALUES ('Local Test Firm B', :'user_b'::uuid)
 RETURNING id AS firm_b_id \gset
 
 SELECT set_config('taxos_test.user_a', :'user_a', true);
