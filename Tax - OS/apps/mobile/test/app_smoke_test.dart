@@ -21,6 +21,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('سجل العملاء والملفات الضريبية'), findsOneWidget);
+    expect(find.textContaining('المحاسب المسؤول عن العميل: أحمد حسن'), findsOneWidget);
   });
 
   testWidgets('switches to English and left-to-right direction', (tester) async {
@@ -68,10 +69,15 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byKey(const ValueKey('task_title')), 'مراجعة ملف العميل');
+    await tester.tap(find.byKey(const ValueKey('task_reviewer')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('مريم علي').last);
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('save_work_item')));
     await tester.pumpAndSettle();
 
     expect(find.text('مراجعة ملف العميل'), findsOneWidget);
     expect(find.textContaining('أحمد حسن'), findsWidgets);
+    expect(find.textContaining('المراجع: مريم علي'), findsOneWidget);
   });
 }
