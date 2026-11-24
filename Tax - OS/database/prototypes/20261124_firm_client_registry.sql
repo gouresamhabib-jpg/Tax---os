@@ -73,7 +73,7 @@ CREATE TABLE taxos_prototype.firms (
   timezone text NOT NULL DEFAULT 'Africa/Cairo',
   status text NOT NULL DEFAULT 'active'
     CHECK (status IN ('active', 'suspended', 'closed')),
-  created_by uuid NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT,
+  created_by uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE RESTRICT,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -342,13 +342,25 @@ USING (taxos_prototype.is_active_firm_member(firm_id));
 
 -- Grants for the authenticated application role. Membership writes remain revoked.
 GRANT USAGE ON SCHEMA taxos_prototype TO authenticated;
-GRANT SELECT, INSERT, UPDATE ON taxos_prototype.firms TO authenticated;
+GRANT SELECT, INSERT ON taxos_prototype.firms TO authenticated;
+REVOKE UPDATE ON taxos_prototype.firms FROM authenticated;
+GRANT UPDATE (name, legal_name, default_currency, timezone)
+  ON taxos_prototype.firms TO authenticated;
 GRANT SELECT ON taxos_prototype.firm_memberships TO authenticated;
 REVOKE INSERT, UPDATE, DELETE ON taxos_prototype.firm_memberships FROM authenticated;
-GRANT SELECT, INSERT, UPDATE ON taxos_prototype.clients TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON taxos_prototype.client_identifiers TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON taxos_prototype.client_contacts TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON taxos_prototype.client_branches TO authenticated;
+GRANT SELECT, INSERT ON taxos_prototype.clients TO authenticated;
+REVOKE UPDATE ON taxos_prototype.clients FROM authenticated;
+GRANT UPDATE (client_type, display_name, legal_name, email, phone, address, notes, archived_at)
+  ON taxos_prototype.clients TO authenticated;
+GRANT SELECT, INSERT, DELETE ON taxos_prototype.client_identifiers TO authenticated;
+GRANT UPDATE (identifier_type, identifier_value, normalized_value, label, verified_at, archived_at)
+  ON taxos_prototype.client_identifiers TO authenticated;
+GRANT SELECT, INSERT, DELETE ON taxos_prototype.client_contacts TO authenticated;
+GRANT UPDATE (full_name, job_title, email, phone, is_primary, notes)
+  ON taxos_prototype.client_contacts TO authenticated;
+GRANT SELECT, INSERT, DELETE ON taxos_prototype.client_branches TO authenticated;
+GRANT UPDATE (branch_name, branch_code, address, is_head_office)
+  ON taxos_prototype.client_branches TO authenticated;
 
 REVOKE ALL ON FUNCTION taxos_prototype.is_active_firm_member(uuid) FROM PUBLIC, anon;
 REVOKE ALL ON FUNCTION taxos_prototype.has_firm_role(uuid, text[]) FROM PUBLIC, anon;
