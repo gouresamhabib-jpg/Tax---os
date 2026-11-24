@@ -191,8 +191,14 @@ BEGIN
     RAISE EXCEPTION 'Office-wide client visibility failed for an ordinary active member';
   END IF;
   IF (SELECT count(*) FROM taxos_prototype.client_assignments
-      WHERE firm_id = current_setting('taxos_test.firm_a_id')::uuid) <> 1 THEN
-    RAISE EXCEPTION 'Office-wide assignment visibility failed';
+      WHERE firm_id = current_setting('taxos_test.firm_a_id')::uuid) <> 2 THEN
+    RAISE EXCEPTION 'Office-wide assignment history visibility failed';
+  END IF;
+  IF (SELECT count(*) FROM taxos_prototype.client_assignments
+      WHERE firm_id = current_setting('taxos_test.firm_a_id')::uuid
+        AND ended_at IS NULL
+        AND assignment_role = 'primary') <> 1 THEN
+    RAISE EXCEPTION 'Expected exactly one current primary client assignment';
   END IF;
   IF (SELECT count(*) FROM taxos_prototype.work_items
       WHERE firm_id = current_setting('taxos_test.firm_a_id')::uuid) <> 1 THEN
