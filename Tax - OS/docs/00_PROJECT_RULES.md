@@ -23,7 +23,7 @@ This document defines the non-negotiable rules that govern how TaxOS is built, m
 | Primary platform | Flutter (mobile-first) |
 | Backend | Supabase (PostgreSQL, Auth, Storage, Realtime, Edge Functions) |
 | License | Proprietary — see root `LICENSE` |
-| Target markets | Individuals, freelancers, small businesses, and accounting firms |
+| Target market | Egyptian accounting and tax advisory firms |
 
 TaxOS is **not** open source. All source code, documentation, and infrastructure configurations are confidential unless explicitly approved for external release.
 
@@ -33,7 +33,7 @@ TaxOS is **not** open source. All source code, documentation, and infrastructure
 
 ### 3.1 Feature-first organization
 
-All application logic lives under `lib/features/<feature_name>/`. No feature may depend on another feature's internal implementation — only on published domain contracts or shared abstractions in `lib/shared/` and `lib/core/`.
+All mobile application logic lives under `apps/mobile/lib/features/<feature_name>/`. No feature may depend on another feature's internal implementation — only on published domain contracts or shared abstractions in `lib/shared/` and `lib/core/`.
 
 ### 3.2 Clean Architecture layers
 
