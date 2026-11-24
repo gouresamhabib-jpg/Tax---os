@@ -325,6 +325,11 @@ BEGIN
     RAISE EXCEPTION 'Only firm owners and admins may revoke invitations';
   END IF;
 
+  IF v_invitation.role = 'admin'
+     AND NOT taxos_prototype.has_firm_role(v_invitation.firm_id, ARRAY['owner']) THEN
+    RAISE EXCEPTION 'Only the firm owner may revoke an admin invitation';
+  END IF;
+
   IF v_invitation.status <> 'pending' THEN
     RAISE EXCEPTION 'Only pending invitations may be revoked';
   END IF;
