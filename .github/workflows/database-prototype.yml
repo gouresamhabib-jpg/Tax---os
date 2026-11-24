@@ -84,7 +84,9 @@ jobs:
           cd "$RUNNER_TEMP/taxos-supabase"
           supabase init --force
           supabase start
-          supabase status -o env >> "$GITHUB_ENV"
+          eval "$(supabase status -o env)"
+          printf 'API_URL=%s\nANON_KEY=%s\nDB_URL=%s\n' \
+            "$API_URL" "$ANON_KEY" "$DB_URL" >> "$GITHUB_ENV"
 
       - name: Create disposable Supabase Auth users
         run: |
