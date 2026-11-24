@@ -13,6 +13,7 @@ Files in this directory are isolated design and test artifacts.
   2. `20261124_client_assignments_and_work_items_rls_tests.sql`
 - Each test script requires two existing local Supabase Auth users and rolls back its fixture transaction.
 - The assignment extension adds client responsibility, operational work items, and trigger-written assignment history. It is not a tax-obligation or formal approval workflow.
-- These files have not been applied to a hosted Supabase project and have not yet been executed against a local PostgreSQL/Supabase instance.
+- A GitHub Actions PostgreSQL 16 compatibility job runs both SQL prototypes and RLS scripts using the isolated `test_support/postgres_auth_stub.sql`; this shim emulates only the minimum `auth.users`, `auth.uid()`, and Supabase role surface needed by the tests. It is not a substitute for final validation against a disposable local Supabase instance.
+- These files have not been applied to a hosted Supabase project. The PostgreSQL compatibility job validates SQL behavior against PostgreSQL 16, while Supabase-specific behavior still requires local Supabase verification.
 
 A production migration must be additive, reconcile legacy `accountants` records, include a backfill/rollback plan, and pass integration tests under actual Supabase roles before application cutover.
