@@ -49,4 +49,29 @@ void main() {
 
     expect(find.text('شركة الاختبار'), findsOneWidget);
   });
+
+  testWidgets('opens the office tasks destination', (tester) async {
+    await tester.pumpWidget(const TaxOSApp());
+
+    await tester.tap(find.byKey(const ValueKey('nav_tasksPageTitle')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('توزيع ومتابعة مهام الفريق لكل عميل'), findsOneWidget);
+  });
+
+  testWidgets('creates a task with an assignee and optional reviewer', (tester) async {
+    await tester.pumpWidget(const TaxOSApp());
+
+    await tester.tap(find.byKey(const ValueKey('nav_tasksPageTitle')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('add_work_item')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const ValueKey('task_title')), 'مراجعة ملف العميل');
+    await tester.tap(find.byKey(const ValueKey('save_work_item')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('مراجعة ملف العميل'), findsOneWidget);
+    expect(find.textContaining('أحمد حسن'), findsWidgets);
+  });
 }
