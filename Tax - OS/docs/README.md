@@ -19,6 +19,7 @@
 | [18_REPOSITORY_AND_IMPLEMENTATION_READINESS.md](18_REPOSITORY_AND_IMPLEMENTATION_READINESS.md) | Actual Git-tree implementation audit and safe Flutter-first delivery sequence |
 | [19_DATABASE_FOUNDATION_AND_RLS_DESIGN.md](19_DATABASE_FOUNDATION_AND_RLS_DESIGN.md) | First proposed firm/client schema slice, office-wide visibility decision, membership authorization, and local RLS test plan |
 | [20_CLIENT_RESPONSIBILITY_AND_WORK_ASSIGNMENT_MODEL.md](20_CLIENT_RESPONSIBILITY_AND_WORK_ASSIGNMENT_MODEL.md) | Client primary/supporting responsibility, independent task assignees/reviewers, assignment history, and RLS prototype design |
+| [21_LOCAL_SUPABASE_VALIDATION_RUNBOOK.md](21_LOCAL_SUPABASE_VALIDATION_RUNBOOK.md) | Safe disposable local Supabase setup, execution of prototype/RLS tests, cleanup, and next implementation gate |
 | [00_PROJECT_RULES.md](00_PROJECT_RULES.md) | Project rules and contributor requirements |
 | [01_PRODUCT_VISION.md](01_PRODUCT_VISION.md) | Legacy product vision; pending reconciliation with DOC-13 |
 | [02_PRD.md](02_PRD.md) | Legacy US-oriented PRD; pending replacement with Egyptian firm requirements |
