@@ -5,6 +5,8 @@ import '../config/app_environment.dart';
 class SupabaseBootstrap {
   const SupabaseBootstrap._();
 
+  static bool isInitialized = false;
+
   static Future<bool> initialize() async {
     if (!AppEnvironment.hasSupabaseConfig) return false;
 
@@ -12,6 +14,7 @@ class SupabaseBootstrap {
       url: AppEnvironment.supabaseUrl,
       publishableKey: AppEnvironment.supabasePublishableKey,
     );
+    isInitialized = true;
     return true;
   }
 }
