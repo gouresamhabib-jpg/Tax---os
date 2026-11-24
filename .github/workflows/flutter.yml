@@ -25,6 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.head_ref || github.ref }}
 
       - name: Set up Flutter
