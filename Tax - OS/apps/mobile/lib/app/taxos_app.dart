@@ -1,25 +1,12 @@
 import 'package:material_ui/material_ui.dart';
 
-import 'app_shell.dart';
+import 'auth_gate.dart';
 
-class TaxOSApp extends StatefulWidget {
+class TaxOSApp extends StatelessWidget {
   const TaxOSApp({super.key});
 
   @override
-  State<TaxOSApp> createState() => _TaxOSAppState();
-}
-
-class _TaxOSAppState extends State<TaxOSApp> {
-  String _locale = 'ar';
-
-  void _toggleLocale() {
-    setState(() => _locale = _locale == 'ar' ? 'en' : 'ar');
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isArabic = _locale == 'ar';
-
     return MaterialApp(
       title: 'TaxOS',
       debugShowCheckedModeBanner: false,
@@ -44,10 +31,7 @@ class _TaxOSAppState extends State<TaxOSApp> {
           ),
         ),
       ),
-      home: Directionality(
-        textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: AppShell(locale: _locale, onToggleLocale: _toggleLocale),
-      ),
+      home: const AuthGate(),
     );
   }
 }

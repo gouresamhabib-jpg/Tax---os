@@ -3,6 +3,7 @@ class AppCopy {
 
   static const Map<String, Map<String, String>> _values = {
     'ar': {
+      'signOut': 'تسجيل الخروج',
       'dashboard': 'لوحة المكتب',
       'clients': 'العملاء',
       'tasksPageTitle': 'مهام المكتب',
@@ -105,6 +106,7 @@ class AppCopy {
       'noClientsFound': 'لا توجد نتائج مطابقة.',
     },
     'en': {
+      'signOut': 'Sign out',
       'dashboard': 'Dashboard',
       'clients': 'Clients',
       'tasksPageTitle': 'Office tasks',
