@@ -213,8 +213,8 @@ SET status = 'in_progress',
     updated_by_membership_id = :'member_b_id'::uuid
 WHERE id = current_setting('taxos_test.work_item_id')::uuid;
 
--- Assigned employee cannot reassign the task.
-DO $$
+-- Assigned employee cannot reassign the task or change manager-controlled details.
+DO $
 BEGIN
   BEGIN
     UPDATE taxos_prototype.work_items
@@ -224,8 +224,17 @@ BEGIN
     RAISE EXCEPTION 'An ordinary assignee was allowed to reassign a task';
   EXCEPTION WHEN insufficient_privilege THEN NULL;
   END;
+
+  BEGIN
+    UPDATE taxos_prototype.work_items
+    SET title = 'Unauthorized title change',
+        updated_by_membership_id = current_setting('taxos_test.member_b_id')::uuid
+    WHERE id = current_setting('taxos_test.work_item_id')::uuid;
+    RAISE EXCEPTION 'An ordinary assignee was allowed to change task details';
+  EXCEPTION WHEN insufficient_privilege THEN NULL;
+  END;
 END;
-$$;
+$;
 
 -- Authenticated clients cannot directly alter immutable assignment history.
 DO $$
