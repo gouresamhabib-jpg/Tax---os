@@ -81,7 +81,7 @@ CREATE TABLE taxos_prototype.client_assignments (
   CONSTRAINT client_assignments_end_pair_check
     CHECK (
       (ended_at IS NULL AND ended_by_membership_id IS NULL)
-      OR (ended_at IS NOT NULL AND ended_by_membership_id IS NOT NULL)
+      OR (ended_at IS NOT NULL AND ended_by_membership_id IS NOT NULL AND ended_at >= assigned_at)
     ),
   CONSTRAINT client_assignments_firm_id_id_unique UNIQUE (firm_id, id)
 );
@@ -146,16 +146,34 @@ BEGIN
       USING ERRCODE = '42501';
   END IF;
 
-  IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.member_id)
-     OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assigned_by_membership_id) THEN
-    RAISE EXCEPTION 'Assignee and assigning actor must be active members of this firm'
-      USING ERRCODE = '23514';
-  END IF;
-
-  IF NEW.ended_by_membership_id IS NOT NULL
-     AND NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.ended_by_membership_id) THEN
-    RAISE EXCEPTION 'Ending actor must be an active member of this firm'
-      USING ERRCODE = '23514';
+  IF TG_OP = 'INSERT' THEN
+    IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.member_id)
+       OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assigned_by_membership_id)
+       OR NOT EXISTS (
+         SELECT 1 FROM taxos_prototype.firm_memberships AS actor
+         WHERE actor.firm_id = NEW.firm_id
+           AND actor.id = NEW.assigned_by_membership_id
+           AND actor.user_id = auth.uid()
+           AND actor.status = 'active'
+       ) THEN
+      RAISE EXCEPTION 'Assignee and assigning actor must be active members; actor must be the caller'
+        USING ERRCODE = '23514';
+    END IF;
+  ELSE
+    IF NEW.ended_by_membership_id IS NOT NULL
+       AND (
+         NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.ended_by_membership_id)
+         OR NOT EXISTS (
+           SELECT 1 FROM taxos_prototype.firm_memberships AS actor
+           WHERE actor.firm_id = NEW.firm_id
+             AND actor.id = NEW.ended_by_membership_id
+             AND actor.user_id = auth.uid()
+             AND actor.status = 'active'
+         )
+       ) THEN
+      RAISE EXCEPTION 'Ending actor must be the current active caller'
+        USING ERRCODE = '23514';
+    END IF;
   END IF;
 
   IF EXISTS (
@@ -339,10 +357,34 @@ BEGIN
       USING ERRCODE = '42501';
   END IF;
 
-  IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assignee_membership_id)
-     OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.created_by_membership_id)
-     OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.updated_by_membership_id) THEN
-    RAISE EXCEPTION 'Assignee, creator, and updater must be active firm members'
+  IF TG_OP = 'INSERT' THEN
+    IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assignee_membership_id)
+       OR NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.created_by_membership_id)
+       OR NOT EXISTS (
+         SELECT 1 FROM taxos_prototype.firm_memberships AS actor
+         WHERE actor.firm_id = NEW.firm_id
+           AND actor.id = NEW.created_by_membership_id
+           AND actor.user_id = auth.uid()
+           AND actor.status = 'active'
+       ) THEN
+      RAISE EXCEPTION 'Assignee must be active and creator must be the current active caller'
+        USING ERRCODE = '23514';
+    END IF;
+  ELSE
+    IF NOT taxos_prototype.is_active_firm_membership(NEW.firm_id, NEW.assignee_membership_id) THEN
+      RAISE EXCEPTION 'New assignee must be an active member of this firm'
+        USING ERRCODE = '23514';
+    END IF;
+  END IF;
+
+  IF NEW.updated_by_membership_id IS NULL OR NOT EXISTS (
+    SELECT 1 FROM taxos_prototype.firm_memberships AS actor
+    WHERE actor.firm_id = NEW.firm_id
+      AND actor.id = NEW.updated_by_membership_id
+      AND actor.user_id = auth.uid()
+      AND actor.status = 'active'
+  ) THEN
+    RAISE EXCEPTION 'Updater must be the current active caller'
       USING ERRCODE = '23514';
   END IF;
 
