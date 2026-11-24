@@ -3,14 +3,22 @@ import 'package:material_ui/material_ui.dart';
 import '../../app/app_copy.dart';
 import '../../shared/demo_office_members.dart';
 import '../clients/data/client_repository.dart';
+import '../clients/domain/client.dart';
+import '../clients/domain/client_repository.dart';
 import 'data/work_item_repository.dart';
 import 'domain/work_item.dart';
 
 class WorkItemsPage extends StatefulWidget {
-  const WorkItemsPage({required this.locale, this.repository, super.key});
+  const WorkItemsPage({
+    required this.locale,
+    this.repository,
+    this.clientRepository,
+    super.key,
+  });
 
   final String locale;
   final WorkItemRepository? repository;
+  final ClientRepository? clientRepository;
 
   @override
   State<WorkItemsPage> createState() => _WorkItemsPageState();
@@ -18,6 +26,7 @@ class WorkItemsPage extends StatefulWidget {
 
 class _WorkItemsPageState extends State<WorkItemsPage> {
   late final WorkItemRepository _repository;
+  late final ClientRepository _clientRepository;
   String _filter = 'all';
   int _nextId = 4;
 
@@ -27,11 +36,13 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
   void initState() {
     super.initState();
     _repository = widget.repository ?? InMemoryWorkItemRepository();
+    _clientRepository = widget.clientRepository ?? InMemoryClientRepository();
   }
 
   @override
   Widget build(BuildContext context) {
     final allItems = _repository.getAll();
+    final clients = _clientRepository.getAll();
     final visibleItems = allItems.where((item) {
       return _filter == 'all' ||
           (_filter == 'open' &&
@@ -154,6 +165,7 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
                                 if (index > 0) const Divider(height: 1),
                                 _WorkItemTile(
                                   item: visibleItems[index],
+                                  clients: clients,
                                   locale: widget.locale,
                                   onStatusChanged: (status) {
                                     setState(() {
@@ -181,6 +193,7 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
       builder: (context) => _WorkItemFormDialog(
         locale: widget.locale,
         id: 'task-local-$_nextId',
+        clients: _clientRepository.getAll(),
       ),
     );
     if (result == null || !mounted) return;
@@ -194,11 +207,13 @@ class _WorkItemsPageState extends State<WorkItemsPage> {
 class _WorkItemTile extends StatelessWidget {
   const _WorkItemTile({
     required this.item,
+    required this.clients,
     required this.locale,
     required this.onStatusChanged,
   });
 
   final WorkItem item;
+  final List<Client> clients;
   final String locale;
   final ValueChanged<WorkItemStatus> onStatusChanged;
 
@@ -206,8 +221,8 @@ class _WorkItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final clients = {
-      for (final client in InMemoryClientRepository.demoClients) client.id: client.name,
+    final clientNames = {
+      for (final client in clients) client.id: client.name,
     };
     return ListTile(
       key: ValueKey('work_item_${item.id}'),
@@ -223,7 +238,7 @@ class _WorkItemTile extends StatelessWidget {
           spacing: 14,
           runSpacing: 6,
           children: [
-            _MetaLabel(icon: Icons.business_outlined, label: clients[item.clientId] ?? item.clientId),
+            _MetaLabel(icon: Icons.business_outlined, label: clientNames[item.clientId] ?? item.clientId),
             _MetaLabel(
               icon: Icons.person_outline,
               label: '${tr('assignee')}: ${demoOfficeMemberName(item.assigneeId, locale)}',
@@ -283,10 +298,15 @@ class _MetaLabel extends StatelessWidget {
 }
 
 class _WorkItemFormDialog extends StatefulWidget {
-  const _WorkItemFormDialog({required this.locale, required this.id});
+  const _WorkItemFormDialog({
+    required this.locale,
+    required this.id,
+    required this.clients,
+  });
 
   final String locale;
   final String id;
+  final List<Client> clients;
 
   @override
   State<_WorkItemFormDialog> createState() => _WorkItemFormDialogState();
@@ -295,12 +315,18 @@ class _WorkItemFormDialog extends StatefulWidget {
 class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
   final _formKey = GlobalKey<FormState>();
   final _title = TextEditingController();
-  String _clientId = 'demo-1';
+  late String _clientId;
   String _assigneeId = 'member-1';
   String? _reviewerId;
   DateTime? _dueDate;
 
   String tr(String key) => AppCopy.t(widget.locale, key);
+
+  @override
+  void initState() {
+    super.initState();
+    _clientId = widget.clients.isEmpty ? '' : widget.clients.first.id;
+  }
 
   @override
   void dispose() {
@@ -329,12 +355,15 @@ class _WorkItemFormDialogState extends State<_WorkItemFormDialog> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  initialValue: _clientId,
+                  key: const ValueKey('task_client'),
+                  initialValue: _clientId.isEmpty ? null : _clientId,
                   decoration: InputDecoration(labelText: tr('client')),
                   items: [
-                    for (final client in InMemoryClientRepository.demoClients)
+                    for (final client in widget.clients)
                       DropdownMenuItem(value: client.id, child: Text(client.name)),
                   ],
+                  validator: (value) =>
+                      value == null || value.isEmpty ? tr('requiredField') : null,
                   onChanged: (value) {
                     if (value != null) setState(() => _clientId = value);
                   },
