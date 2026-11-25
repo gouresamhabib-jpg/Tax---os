@@ -1,6 +1,7 @@
 name: Flutter quality checks
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - "Tax - OS/apps/mobile/**"
@@ -37,25 +38,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Format Dart sources
-        run: dart format lib test
-
-      - name: Inspect formatter changes
-        run: |
-          git status --short
-          git diff --stat
-
-      - name: Commit formatting changes to this repository's PR branch
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: ${{ github.head_ref }}
-          skip_checkout: true
-          skip_fetch: true
-          commit_message: "style(flutter): apply dart formatter"
-          file_pattern: "."
-
-      - name: Verify formatting
+      - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
 
       - name: Analyze
