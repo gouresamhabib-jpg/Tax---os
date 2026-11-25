@@ -1,6 +1,7 @@
 name: Database prototype checks
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - "Tax - OS/database/prototypes/**"
