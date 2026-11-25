@@ -274,7 +274,7 @@ class _InviteDialogState extends State<_InviteDialog> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<TeamRole>(
-            value: _role,
+            initialValue: _role,
             decoration: InputDecoration(labelText: tr('memberRole')),
             items: _assignableRoles
                 .map(
@@ -343,7 +343,7 @@ class _RoleDialogState extends State<_RoleDialog> {
   Widget build(BuildContext context) => AlertDialog(
     title: Text(tr('changeRole')),
     content: DropdownButtonFormField<TeamRole>(
-      value: _role,
+      initialValue: _role,
       items: _assignableRoles
           .map(
             (role) => DropdownMenuItem(
