@@ -1,7 +1,7 @@
 # TaxOS — Database Foundation and RLS Design
 
 **Document ID:** DOC-19  
-**Version:** 0.2  
+**Version:** 0.3  
 **Status:** MVP access decision confirmed; proposed design, not an approved production migration  
 **Date:** 24 November 2026  
 **Depends on:** DOC-13, DOC-14, DOC-15, DOC-17
@@ -35,7 +35,7 @@ The accompanying SQL files live under `database/prototypes/`, not a migration di
 | `client_contacts` | Client contact people | `firm_id` |
 | `client_branches` | Head office and branch locations | `firm_id` |
 
-`auth.users` remains the authentication source. Professional profile details and employee invitations are intentionally outside this first slice.
+`auth.users` remains the authentication source. Professional profile details remain outside this first slice. Invitation and membership administration are proposed in the additive local prototype extension `20261124_firm_invitation_lifecycle.sql` and documented in DOC-24; email delivery remains a separate trusted-backend responsibility.
 
 ### 3.1 Responsibility and task model — prototype added
 
@@ -57,7 +57,7 @@ The extension is a proposed local-only prototype, not a production schema or app
 - The selected firm in the UI is a query context only. Database RLS independently checks membership for the row's `firm_id`.
 - All active members may read and maintain client records in the initial office-wide MVP. Assignment is not an RLS predicate. Role-sensitive client actions can be narrowed after the permission matrix is finalized.
 - Only owner/admin may update firm settings. Membership rows are readable by active firm members but cannot be directly inserted, updated, or deleted by ordinary client sessions.
-- Owner membership is created by a database trigger after an authorized firm insert. Ownership transfer and membership administration require dedicated audited functions in a later slice.
+- Owner membership is created by a database trigger after an authorized firm insert. Invitation acceptance and membership administration use dedicated audited functions in the DOC-24 prototype. Ownership transfer remains a later design gate.
 - Security-definer helpers use a fixed search path, derive the caller from `auth.uid()`, and have restricted EXECUTE grants.
 
 ## 5. Relational integrity
@@ -97,12 +97,12 @@ No hosted Supabase migration is authorized by this document.
 | Ordinary member inserts/changes membership role | Denied |
 | Creator creates a firm | Firm and owner membership created atomically |
 
-The prototype test script requires two existing test users in the local Supabase Auth instance. It must be run only against a disposable local database.
+The registry and assignment test scripts require two existing test users; the DOC-24 invitation lifecycle suite requires three. All scripts must run only against a disposable local database.
 
 ## 8. Remaining design decisions before production migration
 
 - Whether firms may have co-owners in v1 (prototype assumes one initial owner, but does not yet enforce a permanent single-owner invariant).
-- Exact owner/admin/member permission matrix and who can invite, suspend, or revoke staff.
+- Production approval of the owner/admin/member permission matrix and invitation lifecycle in DOC-24; email delivery, owner transfer, and recovery remain open.
 - Whether client identifiers need field-level encryption or an external secrets vault, based on the deployment threat model.
 - Retention and soft-delete policy for clients and official identifiers.
 - Whether staff may create their own work items, whether office-level tasks without a client are needed, and which task categories require mandatory review.
@@ -111,4 +111,4 @@ The prototype test script requires two existing test users in the local Supabase
 
 ## 9. Explicit exclusions
 
-No production migration, data backfill, table rename/drop, Supabase project setting, Storage bucket/policy, ETA connection, or client app database connection is included.
+No production migration, data backfill, table rename/drop, Supabase project setting, Storage bucket/policy, invitation email delivery, ETA connection, or client app database connection is included.
