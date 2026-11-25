@@ -392,6 +392,8 @@ SELECT taxos_prototype.create_firm_invitation(
   'expires-me@example.com', 'read_only'
 ) AS expired_invitation_id \gset
 SELECT set_config('taxos_test.expired_invitation_id', :'expired_invitation_id', true);
+-- Use the test harness owner to move the fixture clock; authenticated clients cannot write invitation rows.
+RESET ROLE;
 UPDATE taxos_prototype.firm_invitations
 SET expires_at = now() - interval '1 minute'
 WHERE id = current_setting('taxos_test.expired_invitation_id')::uuid;
