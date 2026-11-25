@@ -18,7 +18,7 @@
 | [17_LOGICAL_ERD_AND_LEGACY_TABLE_DISPOSITION.md](17_LOGICAL_ERD_AND_LEGACY_TABLE_DISPOSITION.md) | Logical entities, relationships, tenant integrity rules, conceptual ERD, and legacy table keep/replace/defer decisions |
 | [18_REPOSITORY_AND_IMPLEMENTATION_READINESS.md](18_REPOSITORY_AND_IMPLEMENTATION_READINESS.md) | Actual Git-tree implementation audit and safe Flutter-first delivery sequence |
 | [22_FLUTTER_SUPABASE_BOOTSTRAP.md](22_FLUTTER_SUPABASE_BOOTSTRAP.md) | Safe compile-time Supabase configuration, local setup, demo fallback, and next auth/data gates |
-| [23_FLUTTER_AUTHENTICATION_AND_SESSION_GATE.md](23_FLUTTER_AUTHENTICATION_AND_SESSION_GATE.md) | Email/password sign-in, session routing, password-reset request, and authorization gates before office data access |
+| [23_FLUTTER_AUTHENTICATION_AND_SESSION_GATE.md](23_FLUTTER_AUTHENTICATION_AND_SESSION_GATE.md) | Email/password sign-in, session routing, password-reset request, and authorization gates before office data access |\n| [25_FLUTTER_TEAM_MANAGEMENT_DEMO.md](25_FLUTTER_TEAM_MANAGEMENT_DEMO.md) | Bilingual team-management UI prototype and explicit demo-only invitation/membership boundaries |
 | [00_PROJECT_RULES.md](00_PROJECT_RULES.md) | Project rules and contributor requirements |
 | [01_PRODUCT_VISION.md](01_PRODUCT_VISION.md) | Legacy product vision; pending reconciliation with DOC-13 |
 | [02_PRD.md](02_PRD.md) | Legacy US-oriented PRD; pending replacement with Egyptian firm requirements |

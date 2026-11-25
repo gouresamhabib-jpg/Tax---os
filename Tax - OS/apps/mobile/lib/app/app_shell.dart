@@ -5,6 +5,7 @@ import '../features/clients/clients_page.dart';
 import '../features/clients/data/client_repository.dart';
 import '../features/work_items/data/work_item_repository.dart';
 import '../features/work_items/work_items_page.dart';
+import '../features/team/team_management_page.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -638,6 +639,21 @@ class _OfficePage extends StatelessWidget {
                   title: Text(tr('officeName')),
                   subtitle: Text(tr('workspaceMode')),
                   trailing: const Icon(Icons.more_horiz),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  key: const ValueKey('open_team_management'),
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.groups_outlined),
+                  ),
+                  title: Text(tr('teamManagement')),
+                  subtitle: Text(tr('teamSubtitle')),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => TeamManagementPage(locale: locale),
+                    ),
+                  ),
                 ),
                 const Divider(height: 1),
                 ListTile(
