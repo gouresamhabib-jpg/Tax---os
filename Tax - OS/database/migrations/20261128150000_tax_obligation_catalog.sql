@@ -71,7 +71,7 @@ create policy client_tax_obligations_insert
     private.has_firm_role(firm_id, array['owner', 'admin', 'manager'])
     and exists (
       select 1 from taxos_prototype.clients c
-      where c.id = client_id and c.firm_id = firm_id and c.archived_at is null
+      where c.id = client_id and c.firm_id = client_tax_obligations.firm_id and c.archived_at is null
     )
     and exists (
       select 1 from taxos_prototype.firm_memberships m
@@ -90,7 +90,7 @@ create policy client_tax_obligations_update
     private.has_firm_role(firm_id, array['owner', 'admin', 'manager'])
     and exists (
       select 1 from taxos_prototype.clients c
-      where c.id = client_id and c.firm_id = firm_id
+      where c.id = client_id and c.firm_id = client_tax_obligations.firm_id
     )
   );
 
