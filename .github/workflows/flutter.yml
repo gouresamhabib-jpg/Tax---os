@@ -50,5 +50,17 @@ jobs:
       - name: Test
         run: flutter test
 
-      - name: Build Flutter Web
-        run: flutter build web --release
+      - name: Build Supabase-connected Flutter Web
+        run: >-
+          flutter build web --release
+          --dart-define=SUPABASE_URL=https://voisguartuzpcukwrhmn.supabase.co
+          --dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_y-yQJzpluDGLrdtaUNW7SA_Dww2QxQh
+          --dart-define=SUPABASE_SCHEMA=taxos_prototype
+
+      - name: Upload web preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: taxos-web-preview
+          path: build/web/
+          if-no-files-found: error
+          retention-days: 7
