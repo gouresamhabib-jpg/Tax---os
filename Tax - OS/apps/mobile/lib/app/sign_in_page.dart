@@ -60,6 +60,83 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (!email.contains('@') || password.length < 8) {
+      setState(() {
+        _errorMessage = tr(
+          'أدخل بريدًا صحيحًا وكلمة مرور لا تقل عن 8 أحرف.',
+          'Enter a valid email and a password with at least 8 characters.',
+        );
+      });
+      return;
+    }
+
+    final nameController = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(tr('إنشاء حساب جديد', 'Create an account')),
+        content: TextField(
+          controller: nameController,
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: tr('الاسم بالكامل', 'Full name'),
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(tr('إلغاء', 'Cancel')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, nameController.text.trim()),
+            child: Text(tr('متابعة', 'Continue')),
+          ),
+        ],
+      ),
+    );
+    nameController.dispose();
+    if (name == null || name.trim().isEmpty || !mounted) return;
+
+    setState(() {
+      _isBusy = true;
+      _errorMessage = null;
+    });
+    try {
+      final response = await Supabase.instance.client.auth.signUp(
+        email: email,
+        password: password,
+        data: {'full_name': name.trim()},
+      );
+      if (!mounted) return;
+      if (response.session == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              tr(
+                'تم إنشاء الحساب. افتح رسالة البريد لتأكيد الحساب ثم سجل الدخول.',
+                'Account created. Confirm your email, then sign in.',
+              ),
+            ),
+          ),
+        );
+      }
+    } on AuthException catch (error) {
+      if (mounted) setState(() => _errorMessage = error.message);
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = tr('تعذر إنشاء الحساب. حاول مرة أخرى.', 'Could not create the account. Please try again.');
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
+  }
+
   Future<void> _sendPasswordReset() async {
     final email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
@@ -227,6 +304,11 @@ class _SignInPageState extends State<SignInPage> {
                         child: Text(
                           tr('نسيت كلمة المرور؟', 'Forgot password?'),
                         ),
+                      ),
+                      TextButton(
+                        key: const ValueKey('auth_create_account'),
+                        onPressed: _isBusy ? null : _signUp,
+                        child: Text(tr('إنشاء حساب جديد', 'Create a new account')),
                       ),
                     ],
                   ),
