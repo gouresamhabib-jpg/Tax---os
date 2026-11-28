@@ -92,7 +92,8 @@ class _SignInPageState extends State<SignInPage> {
             child: Text(tr('إلغاء', 'Cancel')),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, nameController.text.trim()),
+            onPressed: () =>
+                Navigator.pop(dialogContext, nameController.text.trim()),
             child: Text(tr('متابعة', 'Continue')),
           ),
         ],
@@ -129,7 +130,10 @@ class _SignInPageState extends State<SignInPage> {
     } catch (_) {
       if (mounted) {
         setState(() {
-          _errorMessage = tr('تعذر إنشاء الحساب. حاول مرة أخرى.', 'Could not create the account. Please try again.');
+          _errorMessage = tr(
+            'تعذر إنشاء الحساب. حاول مرة أخرى.',
+            'Could not create the account. Please try again.',
+          );
         });
       }
     } finally {
@@ -308,7 +312,9 @@ class _SignInPageState extends State<SignInPage> {
                       TextButton(
                         key: const ValueKey('auth_create_account'),
                         onPressed: _isBusy ? null : _signUp,
-                        child: Text(tr('إنشاء حساب جديد', 'Create a new account')),
+                        child: Text(
+                          tr('إنشاء حساب جديد', 'Create a new account'),
+                        ),
                       ),
                     ],
                   ),
