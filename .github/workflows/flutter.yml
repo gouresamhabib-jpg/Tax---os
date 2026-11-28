@@ -1,0 +1,48 @@
+name: Flutter quality checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "Tax - OS/apps/mobile/**"
+      - ".github/workflows/flutter.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Tax - OS/apps/mobile/**"
+      - ".github/workflows/flutter.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Tax - OS/apps/mobile"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify Dart formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
