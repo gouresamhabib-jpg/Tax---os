@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/config/app_environment.dart';
+import 'tax_obligations_panel.dart';
 
 class SupabaseWorkspacePage extends StatefulWidget {
   const SupabaseWorkspacePage({
@@ -122,6 +123,7 @@ class _SupabaseWorkspacePageState extends State<SupabaseWorkspacePage> {
       NavigationDestination(icon: const Icon(Icons.people_alt_outlined), label: tr('العملاء', 'Clients')),
       NavigationDestination(icon: const Icon(Icons.checklist_outlined), label: tr('المهام', 'Tasks')),
       NavigationDestination(icon: const Icon(Icons.groups_outlined), label: tr('الفريق', 'Team')),
+      NavigationDestination(icon: const Icon(Icons.receipt_long_outlined), label: tr('الالتزامات', 'Obligations')),
     ];
     return Scaffold(
       appBar: AppBar(
@@ -169,6 +171,12 @@ class _SupabaseWorkspacePageState extends State<SupabaseWorkspacePage> {
                   onStatusChanged: _changeTaskStatus,
                 ),
                 _TeamPanel(locale: widget.locale, membersFuture: _membersFuture),
+                TaxObligationsPanel(
+                  locale: widget.locale,
+                  firmId: widget.firmId,
+                  membershipId: widget.membershipId,
+                  canManage: _canManage,
+                ),
               ],
             ),
           ),
