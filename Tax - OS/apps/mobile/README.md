@@ -39,6 +39,6 @@ The web build is also checked by the Flutter GitHub Actions workflow.
 ## Current MVP boundaries
 
 - The authenticated workspace reads and writes clients, primary client responsibility, tasks, and task status through Supabase RLS.
-- Team membership is read through the firm-scoped member directory RPC when that migration is deployed; otherwise the app falls back to the RLS-protected membership IDs.
+- Team membership is read through the firm-scoped member directory RPC when migration `20261128130000_firm_member_directory.sql` is deployed after the private RLS helper migration; otherwise the app falls back to the RLS-protected membership IDs. The directory migration is not applied to hosted staging automatically.
 - Invitation email delivery, document storage, tax obligation automation, and direct ETA filing are not part of this first usable workspace.
 - The unauthenticated demo workspace remains available only when Supabase configuration is omitted. It is not connected to staging data.
