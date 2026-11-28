@@ -591,7 +591,7 @@ class _ClientDialogState extends State<_ClientDialog> {
               TextFormField(controller: _name, decoration: InputDecoration(labelText: tr('اسم العميل', 'Client name')), validator: (v) => (v == null || v.trim().isEmpty) ? tr('هذا الحقل مطلوب', 'Required') : null),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _type,
+                initialValue: _type,
                 decoration: InputDecoration(labelText: tr('نوع العميل', 'Client type')),
                 items: [DropdownMenuItem(value: 'company', child: Text(tr('شركة / منشأة', 'Company / entity'))), DropdownMenuItem(value: 'individual', child: Text(tr('فرد', 'Individual')))],
                 onChanged: (v) => setState(() => _type = v ?? 'company'),
@@ -606,7 +606,7 @@ class _ClientDialogState extends State<_ClientDialog> {
               TextFormField(controller: _notes, maxLines: 2, decoration: InputDecoration(labelText: tr('ملاحظات', 'Notes'))),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _responsible,
+                initialValue: _responsible,
                 decoration: InputDecoration(labelText: tr('المحاسب المسؤول', 'Responsible accountant')),
                 items: widget.members.map((m) => DropdownMenuItem(value: m['membership_id'] as String, child: Text(m['display_name'] as String))).toList(),
                 onChanged: (v) => setState(() => _responsible = v ?? widget.currentMembershipId),
@@ -674,14 +674,14 @@ class _TaskDialogState extends State<_TaskDialog> {
             TextFormField(controller: _title, decoration: InputDecoration(labelText: tr('عنوان المهمة', 'Task title')), validator: (v) => (v == null || v.trim().isEmpty) ? tr('هذا الحقل مطلوب', 'Required') : null),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
-              value: _clientId,
+              initialValue: _clientId,
               decoration: InputDecoration(labelText: tr('العميل', 'Client')),
               items: widget.clients.map((c) => DropdownMenuItem(value: c['id'] as String, child: Text(c['display_name'] as String))).toList(),
               onChanged: (v) => setState(() => _clientId = v ?? _clientId),
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
-              value: _assignee,
+              initialValue: _assignee,
               decoration: InputDecoration(labelText: tr('المسؤول عن التنفيذ', 'Assignee')),
               items: widget.members.map((m) => DropdownMenuItem(value: m['membership_id'] as String, child: Text(m['display_name'] as String))).toList(),
               onChanged: (v) => setState(() {
@@ -691,7 +691,7 @@ class _TaskDialogState extends State<_TaskDialog> {
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String?>(
-              value: _reviewer,
+              initialValue: _reviewer,
               decoration: InputDecoration(labelText: tr('المراجع (اختياري)', 'Reviewer (optional)')),
               items: [
                 DropdownMenuItem<String?>(value: null, child: Text(tr('بدون مراجع', 'No reviewer'))),
@@ -701,7 +701,7 @@ class _TaskDialogState extends State<_TaskDialog> {
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
-              value: _priority,
+              initialValue: _priority,
               decoration: InputDecoration(labelText: tr('الأولوية', 'Priority')),
               items: [
                 DropdownMenuItem(value: 'low', child: Text(tr('منخفضة', 'Low'))),
