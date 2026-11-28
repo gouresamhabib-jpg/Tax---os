@@ -44,16 +44,6 @@ jobs:
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
 
-      - name: Upload formatted workspace sources
-        uses: actions/upload-artifact@v4
-        with:
-          name: taxos-formatted-dart-sources
-          path: |
-            Tax - OS/apps/mobile/lib/app/office_session_gate.dart
-            Tax - OS/apps/mobile/lib/app/sign_in_page.dart
-            Tax - OS/apps/mobile/lib/features/workspace/supabase_workspace_page.dart
-          if-no-files-found: error
-
       - name: Analyze
         run: flutter analyze
 
