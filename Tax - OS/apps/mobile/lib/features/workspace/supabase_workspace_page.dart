@@ -519,7 +519,7 @@ class _TasksPanel extends StatelessWidget {
                         ),
                       ),
                   ],
-                );;
+                );
               },
             );
           },
