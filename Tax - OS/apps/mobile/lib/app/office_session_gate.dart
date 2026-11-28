@@ -146,9 +146,7 @@ class _CreateOfficePageState extends State<_CreateOfficePage> {
       await Supabase.instance.client
           .schema(AppEnvironment.supabaseSchema)
           .from('firms')
-          .insert({'name': name, 'created_by': user.id})
-          .select('id')
-          .single();
+          .insert({'name': name, 'created_by': user.id});
       widget.onCreated();
     } on PostgrestException catch (error) {
       setState(() => _error = error.message);
