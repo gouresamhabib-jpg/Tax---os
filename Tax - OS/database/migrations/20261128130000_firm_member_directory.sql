@@ -1,7 +1,5 @@
 -- Firm-scoped member directory for the authenticated workspace UI.
 -- Exposes only active members of a firm the caller already belongs to.
--- This migration is reviewed in GitHub only; it is not applied to hosted staging.
-
 begin;
 
 create or replace function taxos_prototype.list_firm_members(p_firm_id uuid)
