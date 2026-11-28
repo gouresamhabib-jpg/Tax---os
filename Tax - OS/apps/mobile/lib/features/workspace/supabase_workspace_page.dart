@@ -285,7 +285,13 @@ class _SupabaseWorkspacePageState extends State<SupabaseWorkspacePage> {
         'reviewer_membership_id': draft.reviewerId,
         'created_by_membership_id': widget.membershipId,
         'updated_by_membership_id': widget.membershipId,
-        'due_at': draft.dueAt?.toUtc().toIso8601String(),
+        'due_at': draft.dueAt == null
+            ? null
+            : DateTime.utc(
+                draft.dueAt!.year,
+                draft.dueAt!.month,
+                draft.dueAt!.day,
+              ).toIso8601String(),
       });
       if (mounted) {
         _refresh();
@@ -302,6 +308,7 @@ class _SupabaseWorkspacePageState extends State<SupabaseWorkspacePage> {
         'status': status,
         'updated_by_membership_id': widget.membershipId,
       }).eq('firm_id', widget.firmId).eq('id', taskId);
+      if (!mounted) return;
       _refresh();
     } on PostgrestException catch (error) {
       if (mounted) _showMessage(error.message, isError: true);
@@ -677,7 +684,10 @@ class _TaskDialogState extends State<_TaskDialog> {
               value: _assignee,
               decoration: InputDecoration(labelText: tr('المسؤول عن التنفيذ', 'Assignee')),
               items: widget.members.map((m) => DropdownMenuItem(value: m['membership_id'] as String, child: Text(m['display_name'] as String))).toList(),
-              onChanged: (v) => setState(() => _assignee = v ?? _assignee),
+              onChanged: (v) => setState(() {
+                _assignee = v ?? _assignee;
+                if (_reviewer == _assignee) _reviewer = null;
+              }),
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String?>(
