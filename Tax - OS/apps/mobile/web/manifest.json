@@ -1,0 +1,9 @@
+{
+  "name": "TaxOS - Egyptian Accounting Office OS",
+  "short_name": "TaxOS",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F6F8F8",
+  "theme_color": "#176B67",
+  "description": "نظام تشغيل لمكاتب المحاسبة المصرية"
+}
