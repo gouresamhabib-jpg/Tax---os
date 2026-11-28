@@ -79,33 +79,35 @@ class _TaxObligationsPanelState extends State<TaxObligationsPanel> {
     );
     if (draft == null) return;
     try {
-      final existing = await _db
-          .from('client_tax_obligations')
-          .select('id')
-          .eq('firm_id', widget.firmId)
-          .eq('client_id', draft.clientId)
-          .eq('obligation_id', draft.obligationId)
-          .maybeSingle();
-      if (existing == null) {
-        await _db.from('client_tax_obligations').insert({
-          'firm_id': widget.firmId,
-          'client_id': draft.clientId,
-          'obligation_id': draft.obligationId,
-          'effective_from': draft.effectiveFrom.toIso8601String().substring(0, 10),
-          'created_by_membership_id': widget.membershipId,
-          'notes': draft.notes.trim().isEmpty ? null : draft.notes.trim(),
-        });
-      } else {
-        await _db.from('client_tax_obligations').update({
-          'is_active': true,
-          'effective_from': draft.effectiveFrom.toIso8601String().substring(0, 10),
-          'effective_to': null,
-          'notes': draft.notes.trim().isEmpty ? null : draft.notes.trim(),
-        }).eq('id', existing['id']);
+      for (final obligationId in draft.obligationIds) {
+        final existing = await _db
+            .from('client_tax_obligations')
+            .select('id')
+            .eq('firm_id', widget.firmId)
+            .eq('client_id', draft.clientId)
+            .eq('obligation_id', obligationId)
+            .maybeSingle();
+        if (existing == null) {
+          await _db.from('client_tax_obligations').insert({
+            'firm_id': widget.firmId,
+            'client_id': draft.clientId,
+            'obligation_id': obligationId,
+            'effective_from': draft.effectiveFrom.toIso8601String().substring(0, 10),
+            'created_by_membership_id': widget.membershipId,
+            'notes': draft.notes.trim().isEmpty ? null : draft.notes.trim(),
+          });
+        } else {
+          await _db.from('client_tax_obligations').update({
+            'is_active': true,
+            'effective_from': draft.effectiveFrom.toIso8601String().substring(0, 10),
+            'effective_to': null,
+            'notes': draft.notes.trim().isEmpty ? null : draft.notes.trim(),
+          }).eq('id', existing['id']);
+        }
       }
       if (!mounted) return;
       await _refresh();
-      _message(tr('تم ربط الالتزام بالعميل.', 'Obligation assigned to client.'));
+      _message(tr('تم ربط الالتزامات المختارة بالعميل.', 'Selected obligations assigned to client.'));
     } on PostgrestException catch (e) {
       _message(e.message, error: true);
     }
