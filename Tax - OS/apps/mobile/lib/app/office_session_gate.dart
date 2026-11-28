@@ -52,7 +52,8 @@ class _OfficeSessionGateState extends State<OfficeSessionGate> {
       'membership_id': row['id'] as String,
       'firm_id': row['firm_id'] as String,
       'role': row['role'] as String,
-      'firm_name': (firm['name'] as String?) ?? tr('مكتب المحاسبة', 'Accounting office'),
+      'firm_name':
+          (firm['name'] as String?) ?? tr('مكتب المحاسبة', 'Accounting office'),
     };
   }
 
@@ -131,7 +132,9 @@ class _CreateOfficePageState extends State<_CreateOfficePage> {
   Future<void> _createOffice() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      setState(() => _error = tr('اكتب اسم المكتب أولاً.', 'Enter your office name.'));
+      setState(
+        () => _error = tr('اكتب اسم المكتب أولاً.', 'Enter your office name.'),
+      );
       return;
     }
     setState(() {
@@ -150,7 +153,12 @@ class _CreateOfficePageState extends State<_CreateOfficePage> {
     } on PostgrestException catch (error) {
       setState(() => _error = error.message);
     } catch (_) {
-      setState(() => _error = tr('تعذر إنشاء المكتب. حاول مرة أخرى.', 'Could not create the office. Please try again.'));
+      setState(
+        () => _error = tr(
+          'تعذر إنشاء المكتب. حاول مرة أخرى.',
+          'Could not create the office. Please try again.',
+        ),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -185,16 +193,25 @@ class _CreateOfficePageState extends State<_CreateOfficePage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.business_outlined, size: 48, color: Color(0xFF176B67)),
+                    const Icon(
+                      Icons.business_outlined,
+                      size: 48,
+                      color: Color(0xFF176B67),
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       tr('أنشئ مساحة مكتبك', 'Create your office workspace'),
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      tr('سيتم إنشاء المكتب وربط حسابك به كمالك بشكل آمن.', 'Your office will be created and your account will become its owner.'),
+                      tr(
+                        'سيتم إنشاء المكتب وربط حسابك به كمالك بشكل آمن.',
+                        'Your office will be created and your account will become its owner.',
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 22),
@@ -209,13 +226,22 @@ class _CreateOfficePageState extends State<_CreateOfficePage> {
                     ),
                     if (_error != null) ...[
                       const SizedBox(height: 12),
-                      Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      Text(
+                        _error!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
                     ],
                     const SizedBox(height: 18),
                     FilledButton(
                       onPressed: _busy ? null : _createOffice,
                       child: _busy
-                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
                           : Text(tr('إنشاء المكتب', 'Create office')),
                     ),
                   ],
@@ -258,14 +284,22 @@ class _LoadErrorPage extends StatelessWidget {
                 const Icon(Icons.cloud_off_outlined, size: 44),
                 const SizedBox(height: 14),
                 Text(
-                  isArabic ? 'تعذر تحميل مساحة المكتب' : 'Could not load the office workspace',
+                  isArabic
+                      ? 'تعذر تحميل مساحة المكتب'
+                      : 'Could not load the office workspace',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 SelectableText(error, textAlign: TextAlign.center),
                 const SizedBox(height: 18),
-                FilledButton(onPressed: onRetry, child: Text(isArabic ? 'إعادة المحاولة' : 'Retry')),
-                TextButton(onPressed: onSignOut, child: Text(isArabic ? 'تسجيل الخروج' : 'Sign out')),
+                FilledButton(
+                  onPressed: onRetry,
+                  child: Text(isArabic ? 'إعادة المحاولة' : 'Retry'),
+                ),
+                TextButton(
+                  onPressed: onSignOut,
+                  child: Text(isArabic ? 'تسجيل الخروج' : 'Sign out'),
+                ),
               ],
             ),
           ),
