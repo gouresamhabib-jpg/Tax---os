@@ -49,7 +49,22 @@ class _SupabaseWorkspacePageState extends State<SupabaseWorkspacePage> {
         .eq('firm_id', widget.firmId)
         .isFilter('archived_at', null)
         .order('display_name');
-    return List<Map<String, dynamic>>.from(rows);
+    final assignments = await _db
+        .from('client_assignments')
+        .select('client_id, member_id')
+        .eq('firm_id', widget.firmId)
+        .eq('assignment_role', 'primary')
+        .isFilter('ended_at', null);
+    final responsibleByClient = {
+      for (final assignment in assignments)
+        assignment['client_id'] as String: assignment['member_id'] as String,
+    };
+    return List<Map<String, dynamic>>.from(rows).map((client) {
+      return {
+        ...client,
+        'responsible_membership_id': responsibleByClient[client['id']],
+      };
+    }).toList();
   }
 
   Future<List<Map<String, dynamic>>> _loadTasks() async {
@@ -63,11 +78,33 @@ class _SupabaseWorkspacePageState extends State<SupabaseWorkspacePage> {
   }
 
   Future<List<Map<String, dynamic>>> _loadMembers() async {
-    final rows = await _db.rpc(
-      'list_firm_members',
-      params: {'p_firm_id': widget.firmId},
-    );
-    return List<Map<String, dynamic>>.from(rows as List);
+    try {
+      final rows = await _db.rpc(
+        'list_firm_members',
+        params: {'p_firm_id': widget.firmId},
+      );
+      return List<Map<String, dynamic>>.from(rows as List);
+    } on PostgrestException {
+      // The secure directory RPC is a separate reviewed migration. Until it is
+      // deployed, fall back to the RLS-protected membership list without
+      // exposing auth.users data.
+      final rows = await _db
+          .from('firm_memberships')
+          .select('id, user_id, role, status')
+          .eq('firm_id', widget.firmId)
+          .eq('status', 'active');
+      return List<Map<String, dynamic>>.from(rows).map((member) {
+        final id = member['id'] as String;
+        return {
+          'membership_id': id,
+          'user_id': member['user_id'],
+          'role': member['role'],
+          'status': member['status'],
+          'display_name': tr('عضو ', 'Member ') + id.substring(0, 6),
+          'email': '',
+        };
+      }).toList();
+    }
   }
 
   void _refresh() {
