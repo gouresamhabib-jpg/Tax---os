@@ -49,9 +49,9 @@ jobs:
         with:
           name: taxos-formatted-dart-sources
           path: |
-            lib/app/office_session_gate.dart
-            lib/app/sign_in_page.dart
-            lib/features/workspace/supabase_workspace_page.dart
+            Tax - OS/apps/mobile/lib/app/office_session_gate.dart
+            Tax - OS/apps/mobile/lib/app/sign_in_page.dart
+            Tax - OS/apps/mobile/lib/features/workspace/supabase_workspace_page.dart
           if-no-files-found: error
 
       - name: Analyze
