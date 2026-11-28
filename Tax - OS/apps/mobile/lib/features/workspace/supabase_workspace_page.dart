@@ -454,38 +454,72 @@ class _TasksPanel extends StatelessWidget {
                 if (memberSnapshot.connectionState != ConnectionState.done) return const Center(child: CircularProgressIndicator());
                 final members = {for (final m in memberSnapshot.data ?? []) m['membership_id'] as String: m['display_name'] as String};
                 if (tasks.isEmpty) return _EmptyState(text: tr('لا توجد مهام مسجلة.', 'No tasks have been recorded.'));
-                return Card(
-                  child: Column(
-                    children: [
-                      for (var i = 0; i < tasks.length; i++) ...[
-                        if (i > 0) const Divider(height: 1),
-                        ListTile(
-                          title: Text(tasks[i]['title'] as String, style: const TextStyle(fontWeight: FontWeight.w700)),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Text([
-                              clients[tasks[i]['client_id']] ?? '',
-                              tr('المسؤول: ', 'Assignee: ') + (members[tasks[i]['assignee_membership_id']] ?? ''),
-                              if (tasks[i]['reviewer_membership_id'] != null) tr('المراجع: ', 'Reviewer: ') + (members[tasks[i]['reviewer_membership_id']] ?? ''),
-                              if (tasks[i]['due_at'] != null) tr('الاستحقاق: ', 'Due: ') + (tasks[i]['due_at'] as String).substring(0, 10),
-                            ].where((s) => s.isNotEmpty).join(' • ')),
-                          ),
-                          trailing: PopupMenuButton<String>(
-                            tooltip: tr('تغيير الحالة', 'Change status'),
-                            onSelected: (status) => onStatusChanged(tasks[i]['id'] as String, status),
-                            itemBuilder: (_) => [
-                              PopupMenuItem(value: 'todo', child: Text(tr('لم تبدأ', 'To do'))),
-                              PopupMenuItem(value: 'in_progress', child: Text(tr('جاري التنفيذ', 'In progress'))),
-                              PopupMenuItem(value: 'blocked', child: Text(tr('متوقفة', 'Blocked'))),
-                              PopupMenuItem(value: 'completed', child: Text(tr('مكتملة', 'Completed'))),
+                final groupedTasks = <String, List<Map<String, dynamic>>>{};
+                for (final task in tasks) {
+                  final memberId = task['assignee_membership_id'] as String;
+                  groupedTasks.putIfAbsent(memberId, () => []).add(task);
+                }
+                final groups = groupedTasks.entries.toList()
+                  ..sort((a, b) => (members[a.key] ?? '').compareTo(members[b.key] ?? ''));
+                return Column(
+                  children: [
+                    for (final group in groups)
+                      Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: const CircleAvatar(child: Icon(Icons.person_outline)),
+                              title: Text(
+                                members[group.key] ?? tr('عضو غير معروف', 'Unknown member'),
+                                style: const TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                              subtitle: Text(
+                                '${group.value.length} ${tr('مهمة', 'tasks')}',
+                              ),
+                            ),
+                            for (final task in group.value) ...[
+                              const Divider(height: 1),
+                              ListTile(
+                                title: Text(
+                                  task['title'] as String,
+                                  style: const TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.only(top: 6),
+                                  child: Text([
+                                    clients[task['client_id']] ?? '',
+                                    if (task['reviewer_membership_id'] != null)
+                                      tr('المراجع: ', 'Reviewer: ') +
+                                          (members[task['reviewer_membership_id']] ?? ''),
+                                    if (task['due_at'] != null)
+                                      tr('الاستحقاق: ', 'Due: ') +
+                                          (task['due_at'] as String).substring(0, 10),
+                                  ].where((s) => s.isNotEmpty).join(' • ')),
+                                ),
+                                trailing: PopupMenuButton<String>(
+                                  tooltip: tr('تغيير الحالة', 'Change status'),
+                                  onSelected: (status) => onStatusChanged(
+                                    task['id'] as String,
+                                    status,
+                                  ),
+                                  itemBuilder: (_) => [
+                                    PopupMenuItem(value: 'todo', child: Text(tr('لم تبدأ', 'To do'))),
+                                    PopupMenuItem(value: 'in_progress', child: Text(tr('جاري التنفيذ', 'In progress'))),
+                                    PopupMenuItem(value: 'blocked', child: Text(tr('متوقفة', 'Blocked'))),
+                                    PopupMenuItem(value: 'completed', child: Text(tr('مكتملة', 'Completed'))),
+                                  ],
+                                  child: Chip(
+                                    label: Text(_statusLabel(task['status'] as String)),
+                                  ),
+                                ),
+                              ),
                             ],
-                            child: Chip(label: Text(_statusLabel(tasks[i]['status'] as String))),
-                          ),
+                          ],
                         ),
-                      ],
-                    ],
-                  ),
-                );
+                      ),
+                  ],
+                );;
               },
             );
           },
