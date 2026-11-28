@@ -76,9 +76,9 @@ jobs:
 
       - name: Apply private RLS helper migration and test grants (PostgreSQL)
         run: |
-          psql --set ON_ERROR_STOP=1 \\
+          psql --set ON_ERROR_STOP=1 \
             --file "Tax - OS/database/migrations/20261128120000_private_rls_helpers.sql"
-          psql --set ON_ERROR_STOP=1 \\
+          psql --set ON_ERROR_STOP=1 \
             --file "Tax - OS/database/prototypes/20261128_private_rls_helpers_tests.sql"
 
       - name: Set up Supabase CLI
