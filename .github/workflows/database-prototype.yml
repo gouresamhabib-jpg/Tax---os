@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "Tax - OS/database/prototypes/**"
+      - "Tax - OS/database/migrations/**"
       - ".github/workflows/database-prototype.yml"
   push:
     branches:
@@ -73,6 +74,13 @@ jobs:
             --set user_b=22222222-2222-4222-8222-222222222222 \
             --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items_rls_tests.sql"
 
+      - name: Apply private RLS helper migration and test grants (PostgreSQL)
+        run: |
+          psql --set ON_ERROR_STOP=1 \\
+            --file "Tax - OS/database/migrations/20261128120000_private_rls_helpers.sql"
+          psql --set ON_ERROR_STOP=1 \\
+            --file "Tax - OS/database/prototypes/20261128_private_rls_helpers_tests.sql"
+
       - name: Set up Supabase CLI
         uses: supabase/setup-cli@v1
         with:
@@ -132,6 +140,13 @@ jobs:
             --set user_a="$TAXOS_TEST_USER_A" \
             --set user_b="$TAXOS_TEST_USER_B" \
             --file "Tax - OS/database/prototypes/20261124_client_assignments_and_work_items_rls_tests.sql"
+
+      - name: Apply private RLS helper migration and test grants (local Supabase)
+        run: |
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \\
+            --file "Tax - OS/database/migrations/20261128120000_private_rls_helpers.sql"
+          psql "$DB_URL" --set ON_ERROR_STOP=1 \\
+            --file "Tax - OS/database/prototypes/20261128_private_rls_helpers_tests.sql"
 
       - name: Stop disposable local Supabase
         if: always()
