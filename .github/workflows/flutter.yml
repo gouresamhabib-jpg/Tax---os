@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 jobs:
-  analyze-and-test:
+  analyze-test-and-build-web:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -46,3 +46,6 @@ jobs:
 
       - name: Test
         run: flutter test
+
+      - name: Build Flutter Web
+        run: flutter build web --release
