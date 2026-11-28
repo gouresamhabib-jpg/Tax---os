@@ -290,9 +290,9 @@ class _ObligationData {
 }
 
 class _AssignmentDraft {
-  const _AssignmentDraft(this.clientId, this.obligationId, this.effectiveFrom, this.notes);
+  const _AssignmentDraft(this.clientId, this.obligationIds, this.effectiveFrom, this.notes);
   final String clientId;
-  final String obligationId;
+  final List<String> obligationIds;
   final DateTime effectiveFrom;
   final String notes;
 }
@@ -372,7 +372,7 @@ class _AssignmentDialogState extends State<_AssignmentDialog> {
     actions: [
       TextButton(onPressed: () => Navigator.pop(context), child: Text(tr('إلغاء', 'Cancel'))),
       FilledButton(
-        onPressed: _selected.isEmpty ? null : () => Navigator.pop(context, _AssignmentDraft(_clientId, _selected.first, _effectiveFrom, _notes.text)),
+        onPressed: _selected.isEmpty ? null : () => Navigator.pop(context, _AssignmentDraft(_clientId, _selected.toList(), _effectiveFrom, _notes.text)),
         child: Text(tr('حفظ الاختيارات', 'Save selections')),
       ),
     ],
