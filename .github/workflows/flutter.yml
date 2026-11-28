@@ -61,6 +61,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: taxos-web-preview
-          path: build/web/
+          path: ${{ github.workspace }}/Tax - OS/apps/mobile/build/web/
           if-no-files-found: error
           retention-days: 7
